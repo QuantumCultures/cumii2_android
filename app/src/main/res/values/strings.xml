@@ -1,0 +1,93 @@
+<resources>
+    <string name="app_name">Cumii</string>
+
+    <!-- Fixes bug -->
+    <item name="visible" type="id"/>
+    <item name="masked" type="id"/>
+
+    <!-- drawer -->
+    <string name="drawer_open">Open drawer</string>
+    <string name="drawer_close">Close drawer</string>
+
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_forgot_password">Forgot password?</string>
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_retry">Retry</string>
+
+    <string name="nav_edit_profile">Edit Profile</string>
+    <string name="nav_privacy">Privacy</string>
+    <string name="nav_terms_and_conditions">Terms and Conditions</string>
+    <string name="nav_logout">Logout</string>
+
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_email_empty">Email field is empty</string>
+    <string name="error_password_empty">Password field is empty</string>
+    <string name="error_login_internet">Login failed. Check internet connection.</string>
+    <string name="error_network_retry">Network error. Retry?</string>
+    <string name="error_no_members">No members found</string>
+    <string name="error_not_events">No events</string>
+
+    <string name="title_home">Home</string>
+    <string name="title_events">Events</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_devices">Devices</string>
+
+    <string name="label_gateway">Gateway</string>
+    <string name="label_smart_device">Smart Device</string>
+    <string name="label_online">Online</string>
+    <string name="label_offline">Offline</string>
+    <string name="label_today_activity">Today Activity</string>
+    <string name="label_median_wakeup_time">Median Wakeup Time</string>
+    <string name="label_median_sleep_time">Median Sleep Time</string>
+    <string name="label_day_activity">Day Activity</string>
+    <string name="label_night_activity">Night Activity</string>
+    <string name="label_usually_active">Usually active</string>
+    <string name="label_usually_inactive_for">Usually inactive for</string>
+    <string name="label_longest_inactive_period">Longest inactive period</string>
+    <string name="label_of_the_time">of the time</string>
+    <string name="label_day_bathroom_activity">Day Bathroom Activity</string>
+    <string name="label_night_bathroom_activity">Night Bathroom Activity</string>
+    <string name="label_used">Used</string>
+    <string name="label_times">times</string>
+    <string name="label_duration">Duration</string>
+    <string name="label_longest">Longest</string>
+    <string name="label_usual">Usual</string>
+    <string name="label_shortest">Shortest</string>
+    <string name="label_energy_usage">Energy Usage</string>
+    <string name="label_water_usage">Water Usage</string>
+    <string name="label_today">Today</string>
+    <string name="label_this_week">This Week</string>
+    <string name="label_this_month">This Month</string>
+    <string name="label_kwh">kWh</string>
+    <string name="label_l">L</string>
+    <string name="label_sgd">S$</string>
+
+
+    <!-- DateUtil -->
+    <string name="date_a_few_seconds_ago">a few seconds ago</string>
+    <plurals name="date_minute_ago">
+        <item quantity="one">%d minute ago</item>
+        <item quantity="other">%d minutes ago</item>
+    </plurals>
+    <string name="date_day">%1$s at %2$s</string>
+    <string name="date_today">Today</string>
+
+    <!-- Profile -->
+    <string name="profile_activity_wakeup_time">08:00 AM</string>
+    <string name="profile_activity_sleep_time">10:00 PM</string>
+
+
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+</resources>

@@ -1,0 +1,749 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/refresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground">
+
+    <android.support.constraint.ConstraintLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/today_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_today_activity"
+            android:textAppearance="@style/AppText.Body"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/today_activity_chart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/today_label"
+            android:layout_marginRight="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp" />
+
+        <LinearLayout
+            android:id="@+id/median_wakeup_frame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/today_activity_chart"
+            app:layout_constraintRight_toLeftOf="@+id/median_sleep_frame"
+            android:layout_marginStart="16dp">
+
+            <View
+                android:id="@+id/wakeup_top_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:text="@string/label_median_wakeup_time"
+                android:textAlignment="center"
+                android:textAppearance="@style/AppText.Body"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/wakeup_time_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:textAlignment="center"
+                android:textAppearance="@style/AppText.Headline"
+                android:textStyle="bold"
+                android:textColor="@color/profile_orange"
+                tools:text="08:00 AM"/>
+            <View
+                android:id="@+id/wakeup_bottom_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/median_sleep_frame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/today_activity_chart"
+            app:layout_constraintLeft_toRightOf="@+id/median_wakeup_frame"
+            android:layout_marginEnd="16dp">
+
+            <View
+                android:id="@+id/sleep_top_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:text="@string/label_median_sleep_time"
+                android:textAlignment="center"
+                android:textAppearance="@style/AppText.Body"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/sleep_time_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:textAlignment="center"
+                android:textAppearance="@style/AppText.Headline"
+                android:textStyle="bold"
+                android:textColor="@color/profile_blue"
+                tools:text="08:00 AM"/>
+
+            <View
+                android:id="@+id/sleep_bottom_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider_view"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/median_wakeup_frame"
+            app:layout_constraintTop_toTopOf="@+id/median_wakeup_frame"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/day_activity_frame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/median_wakeup_frame">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/label_day_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_day_activity"
+                    android:textAppearance="@style/AppText.Body"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RelativeLayout
+                    android:id="@+id/day_usual_active_frame"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/day_usual_inactive_frame"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/day_usual_inactive_frame"
+                    app:layout_constraintTop_toBottomOf="@+id/label_day_activity">
+
+                    <TextView
+                        android:id="@+id/day_usually_active_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/profile_orange"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_usually_active"
+                        android:textAppearance="@style/AppText.Body"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/day_of_the_time_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/profile_orange_light"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_of_the_time"
+                        android:textAppearance="@style/AppText.Caption" />
+
+                    <TextView
+                        android:id="@+id/day_usually_active_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:layout_below="@+id/day_usually_active_label"
+                        android:layout_above="@+id/day_of_the_time_label"
+                        android:textAppearance="@style/AppText.Headline"
+                        android:background="@color/profile_orange_light"
+                        tools:text="-- %"/>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/day_usual_inactive_frame"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="2dp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/day_usual_active_frame"
+                    app:layout_constraintLeft_toRightOf="@+id/day_usual_active_frame">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:text="@string/label_usually_inactive_for"
+                        android:textAppearance="@style/AppText.Body"
+                        android:textColor="@color/white"
+                        android:background="@color/profile_orange"
+                        android:gravity="center_horizontal"/>
+
+                    <TextView
+                        android:id="@+id/day_usually_inactivity_for_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:textAppearance="@style/AppText.Title"
+                        android:gravity="center_horizontal"
+                        android:background="@color/profile_orange_light"
+                        tools:text="--\nmins"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:text="@string/label_longest_inactive_period"
+                        android:textAppearance="@style/AppText.Body"
+                        android:textColor="@color/white"
+                        android:background="@color/profile_orange"
+                        android:gravity="center_horizontal"/>
+
+                    <TextView
+                        android:id="@+id/day_longest_inactivity_period_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:textAppearance="@style/AppText.Title"
+                        android:gravity="center_horizontal"
+                        android:background="@color/profile_orange_light"
+                        tools:text="--\nmins"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/label_day_bathroom_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_day_bathroom_activity"
+                    android:textAppearance="@style/AppText.Body"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@+id/day_usual_inactive_frame" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/day_duration_frame"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/label_day_bathroom_activity">
+
+                    <TextView
+                        android:id="@+id/day_bathroom_times_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        tools:text="--"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/day_bathroom_used_label"
+                        app:layout_constraintBottom_toTopOf="@+id/day_bathroom_times_label"
+                        android:gravity="center"
+                        android:textAppearance="@style/AppText.Title"
+                        android:background="@color/profile_orange_light"
+                        android:ems="4"/>
+
+                    <TextView
+                        android:id="@+id/day_bathroom_used_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_used"
+                        android:textAppearance="@style/AppText.Body"
+                        android:gravity="center_horizontal"
+                        android:background="@color/profile_orange"
+                        android:textColor="@color/white"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="@+id/day_bathroom_times_text"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/day_bathroom_times_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_times"
+                        android:textAppearance="@style/AppText.Caption"
+                        android:background="@color/profile_orange_light"
+                        app:layout_constraintLeft_toLeftOf="@+id/day_bathroom_times_text"
+                        app:layout_constraintRight_toRightOf="@+id/day_bathroom_times_text"
+                        app:layout_constraintBottom_toBottomOf="@+id/day_bathroom_longest_label"/>
+
+                    <TextView
+                        android:id="@+id/day_bathroom_duration_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_duration"
+                        android:layout_marginStart="4dp"
+                        android:textAppearance="@style/AppText.Body"
+                        android:gravity="center_horizontal"
+                        android:background="@color/profile_orange"
+                        android:textColor="@color/white"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/day_bathroom_used_label"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/day_bathroom_longest_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        tools:text="--\nmins"
+                        app:layout_constraintLeft_toLeftOf="@+id/day_bathroom_duration_label"
+                        app:layout_constraintTop_toBottomOf="@+id/day_bathroom_duration_label"
+                        app:layout_constraintRight_toLeftOf="@+id/day_bathroom_usual_text"
+                        android:gravity="center_horizontal"
+                        android:textAppearance="@style/AppText.Subhead"
+                        android:background="@color/profile_orange_light" />
+
+                    <TextView
+                        android:id="@+id/day_bathroom_usual_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        tools:text="--\nmins"
+                        app:layout_constraintLeft_toRightOf="@+id/day_bathroom_longest_text"
+                        app:layout_constraintRight_toLeftOf="@+id/day_bathroom_shortest_text"
+                        app:layout_constraintTop_toBottomOf="@+id/day_bathroom_duration_label"
+                        android:gravity="center_horizontal"
+                        android:textAppearance="@style/AppText.Subhead"
+                        android:background="@color/profile_orange_light" />
+
+                    <TextView
+                        android:id="@+id/day_bathroom_shortest_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        tools:text="--\nmins"
+                        app:layout_constraintLeft_toRightOf="@+id/day_bathroom_usual_text"
+                        app:layout_constraintRight_toRightOf="@+id/day_bathroom_duration_label"
+                        app:layout_constraintTop_toBottomOf="@+id/day_bathroom_duration_label"
+                        android:gravity="center_horizontal"
+                        android:textAppearance="@style/AppText.Subhead"
+                        android:background="@color/profile_orange_light" />
+
+                    <TextView
+                        android:id="@+id/day_bathroom_longest_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_longest"
+                        android:textAppearance="@style/AppText.Caption"
+                        android:background="@color/profile_orange_light"
+                        app:layout_constraintLeft_toLeftOf="@+id/day_bathroom_longest_text"
+                        app:layout_constraintRight_toRightOf="@+id/day_bathroom_longest_text"
+                        app:layout_constraintTop_toBottomOf="@+id/day_bathroom_longest_text"/>
+
+                    <TextView
+                        android:id="@+id/day_bathroom_usual_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_usual"
+                        android:textAppearance="@style/AppText.Caption"
+                        android:background="@color/profile_orange_light"
+                        app:layout_constraintLeft_toLeftOf="@+id/day_bathroom_usual_text"
+                        app:layout_constraintRight_toRightOf="@+id/day_bathroom_usual_text"
+                        app:layout_constraintTop_toBottomOf="@+id/day_bathroom_usual_text"/>
+
+                    <TextView
+                        android:id="@+id/day_bathroom_shortest_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_shortest"
+                        android:textAppearance="@style/AppText.Caption"
+                        android:background="@color/profile_orange_light"
+                        app:layout_constraintLeft_toLeftOf="@+id/day_bathroom_shortest_text"
+                        app:layout_constraintRight_toRightOf="@+id/day_bathroom_shortest_text"
+                        app:layout_constraintTop_toBottomOf="@+id/day_bathroom_shortest_text"/>
+
+
+                </android.support.constraint.ConstraintLayout>
+            </android.support.constraint.ConstraintLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/night_activity_frame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/median_wakeup_frame"
+            tools:visibility="invisible">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/label_night_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_night_activity"
+                    android:textAppearance="@style/AppText.Body"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RelativeLayout
+                    android:id="@+id/night_usual_active_frame"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="2dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/night_usual_inactive_frame"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/night_usual_inactive_frame"
+                    app:layout_constraintTop_toBottomOf="@+id/label_night_activity">
+
+                    <TextView
+                        android:id="@+id/night_usually_active_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/profile_blue"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_usually_active"
+                        android:textAppearance="@style/AppText.Body"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/night_of_the_time_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/profile_blue_light"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_of_the_time"
+                        android:textAppearance="@style/AppText.Caption" />
+
+                    <TextView
+                        android:id="@+id/night_usually_active_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@+id/night_of_the_time_label"
+                        android:layout_below="@+id/night_usually_active_label"
+                        android:background="@color/profile_blue_light"
+                        android:gravity="center"
+                        android:textAppearance="@style/AppText.Headline"
+                        tools:text="-- %" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/night_usual_inactive_frame"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="2dp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/night_usual_active_frame"
+                    app:layout_constraintLeft_toRightOf="@+id/night_usual_active_frame">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/profile_blue"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_usually_inactive_for"
+                        android:textAppearance="@style/AppText.Body"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/night_usually_inactivity_for_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/profile_blue_light"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:textAppearance="@style/AppText.Title"
+                        tools:text="--\nmins" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/profile_blue"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_longest_inactive_period"
+                        android:textAppearance="@style/AppText.Body"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/night_longest_inactivity_period_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/profile_blue_light"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:textAppearance="@style/AppText.Title"
+                        tools:text="--\nmins" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/label_night_bathroom_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/label_night_bathroom_activity"
+                    android:textAppearance="@style/AppText.Body"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/night_usual_inactive_frame" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/night_duration_frame"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/label_night_bathroom_activity">
+
+                    <TextView
+                        android:id="@+id/night_bathroom_times_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:background="@color/profile_blue_light"
+                        android:ems="4"
+                        android:gravity="center"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:textAppearance="@style/AppText.Title"
+                        app:layout_constraintBottom_toTopOf="@+id/night_bathroom_times_label"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/night_bathroom_used_label"
+                        tools:text="--" />
+
+                    <TextView
+                        android:id="@+id/night_bathroom_used_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/profile_blue"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_used"
+                        android:textAppearance="@style/AppText.Body"
+                        android:textColor="@color/white"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="@+id/night_bathroom_times_text"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/night_bathroom_times_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/profile_blue_light"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_times"
+                        android:textAppearance="@style/AppText.Caption"
+                        app:layout_constraintBottom_toBottomOf="@+id/night_bathroom_longest_label"
+                        app:layout_constraintLeft_toLeftOf="@+id/night_bathroom_times_text"
+                        app:layout_constraintRight_toRightOf="@+id/night_bathroom_times_text" />
+
+                    <TextView
+                        android:id="@+id/night_bathroom_duration_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:background="@color/profile_blue"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_duration"
+                        android:textAppearance="@style/AppText.Body"
+                        android:textColor="@color/white"
+                        app:layout_constraintLeft_toRightOf="@+id/night_bathroom_used_label"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/night_bathroom_longest_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/profile_blue_light"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:textAppearance="@style/AppText.Subhead"
+                        app:layout_constraintLeft_toLeftOf="@+id/night_bathroom_duration_label"
+                        app:layout_constraintRight_toLeftOf="@+id/night_bathroom_usual_text"
+                        app:layout_constraintTop_toBottomOf="@+id/night_bathroom_duration_label"
+                        tools:text="--\nmins" />
+
+                    <TextView
+                        android:id="@+id/night_bathroom_usual_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/profile_blue_light"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:textAppearance="@style/AppText.Subhead"
+                        app:layout_constraintLeft_toRightOf="@+id/night_bathroom_longest_text"
+                        app:layout_constraintRight_toLeftOf="@+id/night_bathroom_shortest_text"
+                        app:layout_constraintTop_toBottomOf="@+id/night_bathroom_duration_label"
+                        tools:text="--\nmins" />
+
+                    <TextView
+                        android:id="@+id/night_bathroom_shortest_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/profile_blue_light"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:textAppearance="@style/AppText.Subhead"
+                        app:layout_constraintLeft_toRightOf="@+id/night_bathroom_usual_text"
+                        app:layout_constraintRight_toRightOf="@+id/night_bathroom_duration_label"
+                        app:layout_constraintTop_toBottomOf="@+id/night_bathroom_duration_label"
+                        tools:text="--\nmins" />
+
+                    <TextView
+                        android:id="@+id/night_bathroom_longest_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/profile_blue_light"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_longest"
+                        android:textAppearance="@style/AppText.Caption"
+                        app:layout_constraintLeft_toLeftOf="@+id/night_bathroom_longest_text"
+                        app:layout_constraintRight_toRightOf="@+id/night_bathroom_longest_text"
+                        app:layout_constraintTop_toBottomOf="@+id/night_bathroom_longest_text" />
+
+                    <TextView
+                        android:id="@+id/night_bathroom_usual_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/profile_blue_light"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_usual"
+                        android:textAppearance="@style/AppText.Caption"
+                        app:layout_constraintLeft_toLeftOf="@+id/night_bathroom_usual_text"
+                        app:layout_constraintRight_toRightOf="@+id/night_bathroom_usual_text"
+                        app:layout_constraintTop_toBottomOf="@+id/night_bathroom_usual_text" />
+
+                    <TextView
+                        android:id="@+id/night_bathroom_shortest_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/profile_blue_light"
+                        android:gravity="center_horizontal"
+                        android:paddingBottom="2dp"
+                        android:paddingTop="2dp"
+                        android:text="@string/label_shortest"
+                        android:textAppearance="@style/AppText.Caption"
+                        app:layout_constraintLeft_toLeftOf="@+id/night_bathroom_shortest_text"
+                        app:layout_constraintRight_toRightOf="@+id/night_bathroom_shortest_text"
+                        app:layout_constraintTop_toBottomOf="@+id/night_bathroom_shortest_text" />
+
+
+                </android.support.constraint.ConstraintLayout>
+            </android.support.constraint.ConstraintLayout>
+        </FrameLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
