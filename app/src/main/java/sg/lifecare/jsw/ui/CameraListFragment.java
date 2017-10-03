@@ -147,14 +147,20 @@ public class CameraListFragment extends Fragment{
     private CameraListAdapter.OnCameraItemClickListener mCameraItemClickListener =
             new CameraListAdapter.OnCameraItemClickListener() {
 
+                @Override
+                public void onEventClick(P2pCamera p2pCamera) {
+                    if (p2pCamera.getP2pDev().getConnInfo() == P2PDev.CONN_INFO_CONNECTED) {
+                        ((DashboardActivity) getActivity()).showEventListFragment(p2pCamera.getPosition());
+                    }
+                }
 
-        @Override
-        public void onEventClick(P2pCamera p2pCamera) {
-            if (p2pCamera.getP2pDev().getConnInfo() == P2PDev.CONN_INFO_CONNECTED) {
-                ((DashboardActivity) getActivity()).showEventListFragment(p2pCamera.getPosition());
-            }
-        }
-    };
+                @Override
+                public void onVideoClick(P2pCamera p2pCamera) {
+                    if (p2pCamera.getP2pDev().getConnInfo() == P2PDev.CONN_INFO_CONNECTED) {
+                        ((DashboardActivity) getActivity()).showVideoFragment(p2pCamera.getPosition());
+                    }
+                }
+            };
 
     /*private class CameraListAdapter extends BaseAdapter {
 

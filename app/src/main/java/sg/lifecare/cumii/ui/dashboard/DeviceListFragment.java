@@ -30,8 +30,7 @@ import sg.lifecare.cumii.data.server.response.AssistsedEntityResponse;
 import sg.lifecare.cumii.data.server.response.ConnectedDeviceResponse;
 import sg.lifecare.cumii.data.server.response.Response;
 import sg.lifecare.cumii.ui.base.BaseFragment;
-import sg.lifecare.cumii.ui.dashboard.adapter.GatewayListAdapter;
-import sg.lifecare.cumii.ui.dashboard.adapter.SmartDeviceListAdapter;
+import sg.lifecare.cumii.ui.dashboard.adapter.DeviceListAdapter;
 import sg.lifecare.jsw.data.CameraData;
 import timber.log.Timber;
 
@@ -42,18 +41,14 @@ public class DeviceListFragment extends BaseFragment {
     @BindView(R.id.refresh)
     SwipeRefreshLayout mSwipeView;
 
-    @BindView(R.id.gateway_list)
-    RecyclerView mGatewayListView;
-
-    @BindView(R.id.smartdevice_list)
-    RecyclerView mSmartDeviceListView;
+    @BindView(R.id.device_list)
+    RecyclerView mDeviceListView;
 
     @BindView(R.id.message)
     TextView mMessageText;
 
     private AssistsedEntityResponse.Data mMember;
-    private GatewayListAdapter mGatewayAdapter;
-    private SmartDeviceListAdapter mSmartDeviceAdapter;
+    private DeviceListAdapter mDeviceAdapter;
 
     public static DeviceListFragment newInstance(int position) {
         Bundle data = new Bundle();
@@ -84,7 +79,6 @@ public class DeviceListFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 getGateways(mMember.getId());
-                getSmartDevices(mMember.getId());
             }
         });
 
@@ -96,7 +90,6 @@ public class DeviceListFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         getGateways(mMember.getId());
-        getSmartDevices(mMember.getId());
     }
 
     private void setupView() {
@@ -105,31 +98,17 @@ public class DeviceListFragment extends BaseFragment {
                 layoutManager.getOrientation());
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.list_divider));
 
-        mGatewayListView.setHasFixedSize(true);
-        mGatewayListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mGatewayListView.addItemDecoration(dividerItemDecoration);
+        mDeviceListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mDeviceListView.addItemDecoration(dividerItemDecoration);
 
-        mGatewayAdapter = new GatewayListAdapter(new GatewayListAdapter.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(int position) {
-
-            }
-        });
-        mGatewayListView.setAdapter(mGatewayAdapter);
-
-        mSmartDeviceListView.setHasFixedSize(true);
-        mSmartDeviceListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mSmartDeviceListView.addItemDecoration(dividerItemDecoration);
-
-        mSmartDeviceAdapter = new SmartDeviceListAdapter(new SmartDeviceListAdapter.OnItemClickListener() {
+        mDeviceAdapter = new DeviceListAdapter(getContext(), new DeviceListAdapter.OnItemClickListener() {
 
             @Override
             public void onItemClick(int position) {
 
             }
         });
-        mSmartDeviceListView.setAdapter(mSmartDeviceAdapter);
+        mDeviceListView.setAdapter(mDeviceAdapter);
     }
 
     private void getGateways(String id) {
@@ -174,11 +153,10 @@ public class DeviceListFragment extends BaseFragment {
 
     private void onGetGatewaysResult(List<ConnectedDeviceResponse.Data> gateways) {
 
-        mGatewayAdapter.replaceGateways(gateways);
-
+        getSmartDevices(mMember.getId(), gateways);
     }
 
-    private void getSmartDevices(String id) {
+    private void getSmartDevices(String id, final List<ConnectedDeviceResponse.Data> gateways) {
 
         mSwipeView.setRefreshing(true);
         mMessageText.setVisibility(View.INVISIBLE);
@@ -190,7 +168,7 @@ public class DeviceListFragment extends BaseFragment {
                 .subscribe(connectedDeviceResponse -> {
                     mSwipeView.setRefreshing(false);
 
-                    onGetSmartDevicesResult(connectedDeviceResponse.getData());
+                    onGetSmartDevicesResult(gateways, connectedDeviceResponse.getData());
 
                 }, throwable -> {
                     Timber.e(throwable, throwable.getMessage());
@@ -218,7 +196,8 @@ public class DeviceListFragment extends BaseFragment {
                 }));
     }
 
-    private void onGetSmartDevicesResult(List<ConnectedDeviceResponse.Data> devices) {
+    private void onGetSmartDevicesResult(List<ConnectedDeviceResponse.Data> gateways,
+            List<ConnectedDeviceResponse.Data> devices) {
 
         // save camera devices
         CameraData cameraData = CameraData.getInstance(getContext());
@@ -230,7 +209,7 @@ public class DeviceListFragment extends BaseFragment {
             }
         }
 
-        mSmartDeviceAdapter.replaceSmartDevices(devices);
+        mDeviceAdapter.replaceDevices(gateways, devices);
 
     }
 }

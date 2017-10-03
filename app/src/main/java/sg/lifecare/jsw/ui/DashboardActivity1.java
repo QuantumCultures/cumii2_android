@@ -224,7 +224,7 @@ public class DashboardActivity1 extends AppCompatActivity implements IRecvIOCtrl
     }
 
     @Override
-    public void updateVFrame(Bitmap bitmap, Object o) {
+    public void updateVFrame(Bitmap bitmap, Object p2pDevObject) {
         Timber.d("updateVFrame");
     }
 

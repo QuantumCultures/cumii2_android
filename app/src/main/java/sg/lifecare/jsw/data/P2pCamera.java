@@ -445,6 +445,11 @@ public class P2pCamera {
     }
 
 
+    public interface P2pVideoListener {
+        void updateVFrame(Bitmap bitmap, Object p2pDevObject);
+        void updateAVInfo(int code, Object p2pDevObject, int value1, int value2);
+        void updateAVInfo2(int code, Object p2pDeviceObject, int errorCode, int value);
+    }
 
     public interface P2pCameraListener {
         void onConnectionStatusUpdate(P2pCamera p2pCamera);

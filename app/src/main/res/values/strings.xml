@@ -37,6 +37,8 @@
     <string name="error_network_retry">Network error. Retry?</string>
     <string name="error_no_members">No members found</string>
     <string name="error_not_events">No events</string>
+    <string name="error_no_gateways">No gateways</string>
+    <string name="error_no_smart_devices">No smart devices</string>
 
     <string name="title_home">Home</string>
     <string name="title_events">Events</string>

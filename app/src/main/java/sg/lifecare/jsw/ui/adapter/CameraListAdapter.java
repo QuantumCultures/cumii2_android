@@ -18,9 +18,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jsw.sdk.ui.TouchedTextureView;
-import com.jsw.sdk.ui.TouchedView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +33,7 @@ public class CameraListAdapter extends RecyclerView.Adapter<CameraListAdapter.Ca
 
     public interface OnCameraItemClickListener {
         void onEventClick(P2pCamera p2pCamera);
+        void onVideoClick(P2pCamera p2pCamera);
     }
 
     private OnCameraItemClickListener mListener;
@@ -108,11 +106,11 @@ public class CameraListAdapter extends RecyclerView.Adapter<CameraListAdapter.Ca
         @BindView(R.id.snapshot_view)
         ImageView mSnapshotView;
 
-        @BindView(R.id.video_hardware_view)
-        TouchedTextureView mVideoHardwareView;
+        //@BindView(R.id.video_hardware_view)
+        //TouchedTextureView mVideoHardwareView;
 
-        @BindView(R.id.video_view)
-        TouchedView mVideoView;
+        //@BindView(R.id.video_view)
+        //TouchedView mVideoView;
 
         @BindView(R.id.overlay_frame)
         View mOverlayFrame;
@@ -120,13 +118,16 @@ public class CameraListAdapter extends RecyclerView.Adapter<CameraListAdapter.Ca
         @BindView(R.id.event_image)
         View mEventImage;
 
+        @BindView(R.id.video_image)
+        View mVideoImage;
+
         CameraViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
 
-            mVideoView.setVisibility(View.GONE);
-            mVideoHardwareView.setVisibility(View.GONE);
+            //mVideoView.setVisibility(View.GONE);
+            //mVideoHardwareView.setVisibility(View.GONE);
             mOverlayFrame.setVisibility(View.GONE);
         }
 
@@ -197,6 +198,17 @@ public class CameraListAdapter extends RecyclerView.Adapter<CameraListAdapter.Ca
                     Timber.d("onclick");
                     if (mListener != null) {
                         mListener.onEventClick(camera);
+                        mOverlayFrame.setVisibility(View.GONE);
+                    }
+                }
+            });
+
+            mVideoImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mListener != null) {
+                        mListener.onVideoClick(camera);
+                        mOverlayFrame.setVisibility(View.GONE);
                     }
                 }
             });

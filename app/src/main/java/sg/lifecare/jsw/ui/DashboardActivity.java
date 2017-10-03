@@ -164,4 +164,12 @@ public class DashboardActivity extends AppCompatActivity {
                 .addToBackStack(EventListFragment.class.getSimpleName())
                 .commit();
     }
+
+    public void showVideoFragment(int position) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_content, VideoFragment.newInstance(position), VideoFragment.class.getSimpleName())
+                .addToBackStack(VideoFragment.class.getSimpleName())
+                .commit();
+    }
 }

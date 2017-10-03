@@ -1,11 +1,13 @@
 package sg.lifecare.cumii.ui.dashboard;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -88,6 +90,9 @@ public class MemberFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.member, menu);
+
+        menu.findItem(R.id.action_camera).getIcon().setColorFilter(
+                ContextCompat.getColor(getContext(), R.color.primary_dark), PorterDuff.Mode.SRC_IN);
     }
 
     @Override
