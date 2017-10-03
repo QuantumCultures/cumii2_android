@@ -90,4 +90,16 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+
+
+    <string name="jsw_label_connected">Connected</string>
+    <string name="jsw_label_connecting">Connecting</string>
+    <string name="jsw_label_disconnected">Disconnected</string>
+    <string name="jsw_label_connect_failed">Failed to connect</string>
+    <string name="jsw_label_connect_wrong_did">Wrong DID</string>
+    <string name="jsw_label_connect_wrong_password">Wrong security code</string>
+    <string name="jsw_label_camera">Camera</string>
+
+    <string name="jsw_error_no_cameras_added">No cameras added</string>
 </resources>
