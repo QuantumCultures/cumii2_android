@@ -32,7 +32,7 @@ ext {
     minSdkVersion = 19
     targetSdkVersion = 25
     compileSdkVersion = 26
-    buildToolsVersion = '26.0.0'
+    buildToolsVersion = '26.0.2'
     constrainLayoutVersion = '1.0.2'
 
     playServiceVersion = '11.0.2'

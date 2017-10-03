@@ -32,6 +32,7 @@ import retrofit2.HttpException;
 import sg.lifecare.cumii.R;
 import sg.lifecare.cumii.data.CumiiUtil;
 import sg.lifecare.cumii.data.server.response.EntityDetailResponse;
+import sg.lifecare.cumii.data.server.response.LogoutResponse;
 import sg.lifecare.cumii.data.server.response.Response;
 import sg.lifecare.cumii.ui.base.BaseActivity;
 import timber.log.Timber;
@@ -117,7 +118,11 @@ public class DashboardActivity extends BaseActivity implements
         mUserNameText = headerLayout.findViewById(R.id.user_name_text);
 
         mNavigationView.setNavigationItemSelectedListener(item -> {
+            Timber.d("here");
             switch (item.getItemId()) {
+                case R.id.nav_item_logout:
+                    logout();
+                    break;
                 default:
                     break;
             }
@@ -222,6 +227,44 @@ public class DashboardActivity extends BaseActivity implements
                         Response response = CumiiUtil.getResponse(
                                 ((HttpException) throwable).response().errorBody(), type);
 
+                        if (response.getErrorCode() == 401) {
+                            goToLoginActivity();
+                            return;
+                        }
+
+                        if ((response != null) && !TextUtils.isEmpty(response.getErrorDesc())) {
+                            showServerError(response.getErrorDesc());
+                        } else {
+                            showServerError(getString(R.string.error_login_internet));
+                        }
+                    }
+                }));
+    }
+
+    private void logout() {
+        Observable<LogoutResponse> observable =
+                mDataManager.getCumiiService().logout(mDataManager.getPreferences().getDeviceId());
+        mCompositeDisposable.add(observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(logoutResponse -> {
+                    onLogoutResult(logoutResponse);
+                }, throwable -> {
+                    Timber.e(throwable, throwable.getMessage());
+
+                    if (throwable instanceof SocketTimeoutException) {
+                        showNetworkError(R.string.action_retry,
+                                (dialogInterface, i) -> getUserEntity(mDataManager.getPreferences().getEntityId()));
+                    } else if (throwable instanceof HttpException){
+                        if (((HttpException) throwable).code() == 401) {
+                            goToLoginActivity();
+                            return;
+                        }
+
+                        Type type = new TypeToken<EntityDetailResponse>() {}.getType();
+                        Response response = CumiiUtil.getResponse(
+                                ((HttpException) throwable).response().errorBody(), type);
+
                         if ((response != null) && !TextUtils.isEmpty(response.getErrorDesc())) {
                             showServerError(response.getErrorDesc());
                         } else {
@@ -257,6 +300,11 @@ public class DashboardActivity extends BaseActivity implements
             }*/
             showMemberListFragment();
         }
+    }
+
+    private void onLogoutResult(LogoutResponse logoutResponse) {
+        mDataManager.getPreferences().clear(this);
+        goToLoginActivity();
     }
 
     private void showMemberListFragment() {

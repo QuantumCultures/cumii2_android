@@ -120,10 +120,10 @@ public interface CumiiService {
             @Query("PageSize")int pageSize,
             @Query("SkipSize")int skipSize);
 
-    @GET("/mlifecare/device/getConnectedGateways")
+    @GET("/matthings/device/getConnectedGateways")
     Observable<ConnectedDeviceResponse> getConnectedGateways(@Query("EntityId")String entityId);
 
-    @GET("/mlifecare/device/getConnectedSmartDevices")
+    @GET("/matthings/device/getConnectedSmartDevices")
     Observable<ConnectedDeviceResponse> getConnectedSmartDevices(@Query("EntityId")String entityId);
 
     @GET("/mlifecare/event/getActivityData")

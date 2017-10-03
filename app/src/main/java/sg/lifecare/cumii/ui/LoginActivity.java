@@ -24,6 +24,8 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
+import sg.lifecare.cumii.BuildConfig;
+import sg.lifecare.cumii.CumiiConfig;
 import sg.lifecare.cumii.R;
 import sg.lifecare.cumii.data.CumiiUtil;
 import sg.lifecare.cumii.data.server.response.LoginResponse;
@@ -59,6 +61,11 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
 
         ButterKnife.bind(this);
+
+        if (BuildConfig.DEBUG) {
+            mEmailEdit.setText(CumiiConfig.TEST_USERNAME);
+            mPasswordEdit.setText(CumiiConfig.TEST_PASSWORD);
+        }
     }
 
     @OnClick(R.id.email_sign_in_button)

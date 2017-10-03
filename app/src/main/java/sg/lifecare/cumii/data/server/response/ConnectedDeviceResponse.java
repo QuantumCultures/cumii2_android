@@ -30,6 +30,7 @@ public class ConnectedDeviceResponse extends Response {
         private String value;
         private String status;
         private String name;
+        private String password;
 
         public String getName() {
             return name;

@@ -15,6 +15,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import sg.lifecare.cumii.util.CookieUtils;
 import timber.log.Timber;
 
 public class CumiiPreferences {
@@ -63,7 +64,11 @@ public class CumiiPreferences {
         Timber.d("checkGooglePlayServices: %b", resultCode == ConnectionResult.SUCCESS);
 
         return resultCode == ConnectionResult.SUCCESS;
+    }
 
+    public void clear(Context context) {
+        CookieUtils.getCookieJar(context).clear();
+        setEntityId("");
     }
 
     public String getDeviceId() {
