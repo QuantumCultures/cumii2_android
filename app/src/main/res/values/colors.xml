@@ -34,4 +34,8 @@
     <color name="profile_energy_light">#e1e9cd</color>
     <color name="profile_water">#0091a9</color>
     <color name="profile_water_light">#ceebed</color>
+
+    <color name="jsw_online">#1B5E20</color>
+    <color name="jsw_normal">@color/black_87</color>
+    <color name="jsw_offline">#B71C1C</color>
 </resources>
