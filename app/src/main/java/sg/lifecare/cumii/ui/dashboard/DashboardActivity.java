@@ -118,7 +118,6 @@ public class DashboardActivity extends BaseActivity implements
         mUserNameText = headerLayout.findViewById(R.id.user_name_text);
 
         mNavigationView.setNavigationItemSelectedListener(item -> {
-            Timber.d("here");
             switch (item.getItemId()) {
                 case R.id.nav_item_logout:
                     logout();

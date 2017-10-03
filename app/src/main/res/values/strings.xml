@@ -20,6 +20,7 @@
     <string name="action_ok">OK</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_retry">Retry</string>
+    <string name="action_camera">Camera</string>
 
     <string name="nav_edit_profile">Edit Profile</string>
     <string name="nav_privacy">Privacy</string>

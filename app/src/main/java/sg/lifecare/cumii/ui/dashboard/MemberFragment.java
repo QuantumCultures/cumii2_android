@@ -1,5 +1,6 @@
 package sg.lifecare.cumii.ui.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -46,6 +50,8 @@ public class MemberFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setHasOptionsMenu(true);
+
         mPosition = getArguments().getInt(KEY_MEMBER_POSITION);
         mMember = getDataManager().getMember(mPosition);
     }
@@ -77,6 +83,29 @@ public class MemberFragment extends BaseFragment {
                 mTabs.setupWithViewPager(mViewPager);
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.member, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Timber.d("onOptionsItemSelected: %d    %d", item.getItemId(), R.id.action_camera);
+        switch (item.getItemId()) {
+            case R.id.action_camera:
+                startCumiiDashboardActivity();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void startCumiiDashboardActivity() {
+        Intent intent = new Intent(getActivity(), sg.lifecare.jsw.ui.DashboardActivity.class);
+        startActivity(intent);
     }
 
     public String getTitle() {

@@ -32,6 +32,7 @@ import sg.lifecare.cumii.data.server.response.Response;
 import sg.lifecare.cumii.ui.base.BaseFragment;
 import sg.lifecare.cumii.ui.dashboard.adapter.GatewayListAdapter;
 import sg.lifecare.cumii.ui.dashboard.adapter.SmartDeviceListAdapter;
+import sg.lifecare.jsw.data.CameraData;
 import timber.log.Timber;
 
 public class DeviceListFragment extends BaseFragment {
@@ -217,9 +218,19 @@ public class DeviceListFragment extends BaseFragment {
                 }));
     }
 
-    private void onGetSmartDevicesResult(List<ConnectedDeviceResponse.Data> gateways) {
+    private void onGetSmartDevicesResult(List<ConnectedDeviceResponse.Data> devices) {
 
-        mSmartDeviceAdapter.replaceSmartDevices(gateways);
+        // save camera devices
+        CameraData cameraData = CameraData.getInstance(getContext());
+        cameraData.clear();
+
+        for (ConnectedDeviceResponse.Data device : devices) {
+            if (device.getProductType() == CumiiUtil.JSW_CAMERA_PRODUCT_TYPE) {
+                cameraData.addCamera(device.getName(), device.getId(), device.getPassword());
+            }
+        }
+
+        mSmartDeviceAdapter.replaceSmartDevices(devices);
 
     }
 }

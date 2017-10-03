@@ -14,6 +14,7 @@ import java.lang.reflect.Type;
 import java.util.Date;
 
 import okhttp3.ResponseBody;
+import sg.lifecare.cumii.data.server.response.ConnectedDeviceResponse;
 import sg.lifecare.cumii.data.server.response.Response;
 import timber.log.Timber;
 
@@ -43,6 +44,10 @@ public class CumiiUtil {
     public static final String TEST_EVENT = "T";
     public static final String BATT_EVENT = "BATT";
     public static final String ALERT_EVENT = "A";
+
+    // products types
+    public static final int UNKNOWN_PRODUCT_TYPE = 0;
+    public static final int JSW_CAMERA_PRODUCT_TYPE = 1;
 
     public enum EventType {
         UNKNOWN,

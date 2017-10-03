@@ -35,8 +35,9 @@ ext {
     compileSdkVersion = 26
     buildToolsVersion = '26.0.2'
     constrainLayoutVersion = '1.0.2'
+    multidexVersion = '1.0.1'
 
-    playServiceVersion = '11.0.2'
+    playServiceVersion = '11.0.4'
 
     supportLibraryVersion = '25.3.1'
     gsonVersion = '2.8.1'

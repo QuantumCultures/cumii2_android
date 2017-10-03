@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 import java.util.List;
 
+import sg.lifecare.cumii.data.CumiiUtil;
 import timber.log.Timber;
 
 public class ConnectedDeviceResponse extends Response {
@@ -32,12 +33,29 @@ public class ConnectedDeviceResponse extends Response {
         private String name;
         private String password;
 
+        public String getId() {
+            return _id;
+        }
+
         public String getName() {
             return name;
         }
 
+        public String getPassword() {
+            return password;
+        }
+
         public String getStatus() {
             return status;
+        }
+
+        public int getProductType() {
+            if (product != null) {
+                return product.getProductType();
+
+            }
+
+            return CumiiUtil.UNKNOWN_PRODUCT_TYPE;
         }
 
         public boolean isOnline() {
@@ -71,6 +89,8 @@ public class ConnectedDeviceResponse extends Response {
     }
 
     class Product {
+        public static final String PRODUCT_JSW_CAMERA = "58ddf62e2b3bec1c1cdfae2c";
+
         private String _id;
         private List<Media> medias;
         private boolean gsm;
@@ -80,6 +100,17 @@ public class ConnectedDeviceResponse extends Response {
 
         List<Media> getMedias() {
             return medias;
+        }
+
+        public int getProductType() {
+            if (!TextUtils.isEmpty(_id)) {
+                if (PRODUCT_JSW_CAMERA.equals(_id)) {
+                    return CumiiUtil.JSW_CAMERA_PRODUCT_TYPE;
+                }
+
+            }
+
+            return CumiiUtil.UNKNOWN_PRODUCT_TYPE;
         }
     }
 }

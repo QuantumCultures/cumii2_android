@@ -115,7 +115,6 @@ public class MemberListFragment extends BaseFragment implements MemberListAdapte
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.drawer, menu);
     }
 
     private void getMembersEntity(String id) {
