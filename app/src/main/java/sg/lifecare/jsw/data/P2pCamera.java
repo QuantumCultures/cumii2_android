@@ -16,8 +16,6 @@ import com.jsw.sdk.p2p.device.extend.Ex_DayTime_t;
 import com.jsw.sdk.p2p.device.extend.Ex_IOCTRLListEventResp;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 import sg.lifecare.cumii.util.HexUtil;
 import sg.lifecare.jsw.util.JswUtil;
@@ -33,8 +31,9 @@ public class P2pCamera {
     private P2pDevResponseHandler mP2pDevResponseHandler;
     private IoCtrlHandler mIoCtrlHandler;
 
-    private P2pCameraListener mP2pCameraListener;
-    private List<P2pCameraEventListener> mP2pCameraEventListener = new ArrayList<>();
+    private P2pConnectionListener mP2pConnectionListener;
+    private P2pEventListener mP2pEventListener;
+    private P2pSnapshotListener mP2pSnapshotListener;
 
     public P2pCamera(P2PDev p2pDev, Activity activity, int position) {
         mP2pDev = p2pDev;
@@ -52,26 +51,34 @@ public class P2pCamera {
         return mP2pDev;
     }
 
-    public void setListener(P2pCameraListener listener) {
-        mP2pCameraListener = listener;
+    public void addConnectionListener(P2pConnectionListener listener) {
+        mP2pConnectionListener = listener;
     }
 
-    public void removeListener() {
-        mP2pCameraListener = null;
+    public void removeConnectionListener() {
+        mP2pConnectionListener = null;
     }
 
-    public void addEventListener(P2pCameraEventListener listener) {
-        mP2pCameraEventListener.add(listener);
+    public void addEventListener(P2pEventListener listener) {
+        mP2pEventListener = listener;
     }
 
-    public void removeEventListener(P2pCameraEventListener listener) {
-        if (mP2pCameraEventListener.size() > 0) {
-            for (int i = mP2pCameraEventListener.size() - 1; i >= 0; i--) {
-                if (listener == mP2pCameraEventListener.get(i)) {
-                    mP2pCameraEventListener.remove(i);
-                }
-            }
-        }
+    public void removeEventListener() {
+        mP2pEventListener = null;
+    }
+
+    public void addSnapshotListener(P2pSnapshotListener listener) {
+        mP2pSnapshotListener = listener;
+    }
+
+    public void removeSnapshotListener() {
+        mP2pSnapshotListener = null;
+    }
+
+    public void removeAllListeners() {
+        removeConnectionListener();
+        removeEventListener();
+        removeSnapshotListener();
     }
 
 
@@ -240,8 +247,8 @@ public class P2pCamera {
                     break;
 
                 case P2PDev.OM_GET_ONE_PIC_FROM_STREAM:
-                    if (p2pCamera.mP2pCameraListener != null) {
-                        p2pCamera.mP2pCameraListener.onSnapshotUpdate(p2pCamera);
+                    if (p2pCamera.mP2pSnapshotListener != null) {
+                        p2pCamera.mP2pSnapshotListener.onSnapshotUpdate(p2pCamera);
                     }
                     break;
 
@@ -255,8 +262,8 @@ public class P2pCamera {
                         // TODO: stop reconnect timer
                     }
 
-                    if (p2pCamera.mP2pCameraListener != null) {
-                        p2pCamera.mP2pCameraListener.onConnectionStatusUpdate(p2pCamera);
+                    if (p2pCamera.mP2pConnectionListener != null) {
+                        p2pCamera.mP2pConnectionListener.onConnectionStatusUpdate(p2pCamera);
                     }
                     break;
 
@@ -271,8 +278,8 @@ public class P2pCamera {
                         // TODO: update camera status
                     }
 
-                    if (p2pCamera.mP2pCameraListener != null) {
-                        p2pCamera.mP2pCameraListener.onConnectionStatusUpdate(p2pCamera);
+                    if (p2pCamera.mP2pConnectionListener != null) {
+                        p2pCamera.mP2pConnectionListener.onConnectionStatusUpdate(p2pCamera);
                     }
                     break;
 
@@ -283,20 +290,20 @@ public class P2pCamera {
                         // TODO: update camera status
                     }
 
-                    if (p2pCamera.mP2pCameraListener != null) {
-                        p2pCamera.mP2pCameraListener.onConnectionStatusUpdate(p2pCamera);
+                    if (p2pCamera.mP2pConnectionListener != null) {
+                        p2pCamera.mP2pConnectionListener.onConnectionStatusUpdate(p2pCamera);
                     }
                     break;
 
                 case P2PDev.CONN_INFO_CONNECTING:
-                    if (p2pCamera.mP2pCameraListener != null) {
-                        p2pCamera.mP2pCameraListener.onConnectionStatusUpdate(p2pCamera);
+                    if (p2pCamera.mP2pConnectionListener != null) {
+                        p2pCamera.mP2pConnectionListener.onConnectionStatusUpdate(p2pCamera);
                     }
                     break;
 
                 case P2PDev.CONN_INFO_CONNECT_FAIL:
-                    if (p2pCamera.mP2pCameraListener != null) {
-                        p2pCamera.mP2pCameraListener.onConnectionStatusUpdate(p2pCamera);
+                    if (p2pCamera.mP2pConnectionListener != null) {
+                        p2pCamera.mP2pConnectionListener.onConnectionStatusUpdate(p2pCamera);
                     }
                     break;
 
@@ -305,8 +312,8 @@ public class P2pCamera {
                         // TODO: update camera status
                     }
 
-                    if (p2pCamera.mP2pCameraListener != null) {
-                        p2pCamera.mP2pCameraListener.onConnectionStatusUpdate(p2pCamera);
+                    if (p2pCamera.mP2pConnectionListener != null) {
+                        p2pCamera.mP2pConnectionListener.onConnectionStatusUpdate(p2pCamera);
                     }
                     break;
 
@@ -370,7 +377,6 @@ public class P2pCamera {
                     //activity.displayVideo(p2PDev);
 
                     if (p2pDev.isConnected()) {
-                        Timber.d("test here");
                         p2pDev.changeDateTime();
                         p2pDev.startGetOnePicFromRealStream();
                     }
@@ -391,10 +397,8 @@ public class P2pCamera {
                 case AUTH_AV_IO_Proto.IOCTRL_TYPE_LISTEVENT_RESP:
                     parseEventList(p2pCamera.mEventData, data);
 
-                    if (p2pCamera.mP2pCameraEventListener != null) {
-                        for (P2pCameraEventListener listener : p2pCamera.mP2pCameraEventListener) {
-                            listener.onEventDataUpdate(p2pCamera);
-                        }
+                    if (p2pCamera.mP2pEventListener != null) {
+                        p2pCamera.mP2pEventListener.onEventDataUpdate(p2pCamera);
                     }
                     break;
             }
@@ -451,12 +455,15 @@ public class P2pCamera {
         void updateAVInfo2(int code, Object p2pDeviceObject, int errorCode, int value);
     }
 
-    public interface P2pCameraListener {
+    public interface P2pConnectionListener {
         void onConnectionStatusUpdate(P2pCamera p2pCamera);
+    }
+
+    public interface P2pSnapshotListener {
         void onSnapshotUpdate(P2pCamera p2pCamera);
     }
 
-    public interface P2pCameraEventListener {
+    public interface P2pEventListener {
         void onEventDataUpdate(P2pCamera p2pCamera);
     }
 }

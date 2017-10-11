@@ -93,15 +93,13 @@ public class CameraListFragment extends Fragment{
 
 
         for (int i = 0; i < mP2pCameras.size(); i++) {
-            mP2pCameras.get(i).setListener(mP2pCameraListener);
+            mP2pCameras.get(i).addConnectionListener(mP2pConnectionListener);
+            mP2pCameras.get(i).addSnapshotListener(mP2pSnapshotListener);
         }
 
-        mListView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ((DashboardActivity) getActivity()).resumeAllCameras();
-                ((DashboardActivity) getActivity()).startAllCameras();
-            }
+        mListView.postDelayed(() -> {
+            ((DashboardActivity) getActivity()).resumeAllCameras();
+            ((DashboardActivity) getActivity()).startAllCameras();
         }, 1000);
     }
 
@@ -112,7 +110,7 @@ public class CameraListFragment extends Fragment{
         Timber.d("onPause");
 
         for (int i = 0; i < mP2pCameras.size(); i++) {
-            mP2pCameras.get(i).removeListener();
+            mP2pCameras.get(i).removeAllListeners();
         }
 
         ((DashboardActivity) getActivity()).pauseAllCameras();
@@ -132,12 +130,14 @@ public class CameraListFragment extends Fragment{
         ((DashboardActivity) getActivity()).stopAllCameras();
     }
 
-    private P2pCamera.P2pCameraListener mP2pCameraListener = new P2pCamera.P2pCameraListener() {
+    private P2pCamera.P2pConnectionListener mP2pConnectionListener = new P2pCamera.P2pConnectionListener() {
         @Override
         public void onConnectionStatusUpdate(P2pCamera p2pCamera) {
             mAdapter.notifyItemChanged(p2pCamera.getPosition());
         }
+    };
 
+    private P2pCamera.P2pSnapshotListener mP2pSnapshotListener = new P2pCamera.P2pSnapshotListener() {
         @Override
         public void onSnapshotUpdate(P2pCamera p2pCamera) {
             mAdapter.notifyItemChanged(p2pCamera.getPosition());
@@ -161,84 +161,4 @@ public class CameraListFragment extends Fragment{
                     }
                 }
             };
-
-    /*private class CameraListAdapter extends BaseAdapter {
-
-        private Context mContext;
-        private List<CameraData.Camera> mCameras = new ArrayList<>();
-        private List<CameraView> mCameraViews = new ArrayList<>();
-
-        CameraListAdapter(Context context) {
-            mContext = context;
-        }
-
-        @Override
-        public int getCount() {
-            Timber.d("getCount: %d", mCameras.size());
-            return mCameras.size();
-        }
-
-        @Override
-        public CameraView getItem(int position) {
-            Timber.d("getItem: %d", position);
-            return mCameraViews.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup viewGroup) {
-            Timber.d("getView: %d", position);
-            if (position < mCameraViews.size()) {
-                return mCameraViews.get(position);
-            }
-
-            CameraView cameraView = new CameraView(mContext);
-            cameraView.setParent(getActivity());
-            cameraView.setCamera(mCameras.get(position), position);
-            cameraView.updateView();
-
-            mCameraViews.add(cameraView);
-
-            return cameraView;
-        }
-
-        private void replaceCameras(List<CameraData.Camera> cameras) {
-            mCameraViews.clear();
-            mCameras.clear();
-
-            if (cameras.size() >  0) {
-                mCameras.addAll(cameras);
-            }
-
-            notifyDataSetChanged();
-        }
-
-        private void startAllCameras() {
-            for (int i = 0; i < mCameraViews.size();  i++) {
-                mCameraViews.get(i).connect(i * 500);
-            }
-        }
-
-        private void pauseAllCameras() {
-            for (int i = 0; i < mCameraViews.size(); i++) {
-                mCameraViews.get(i).pause();
-            }
-        }
-
-        private void resumeAllCameras() {
-            for (int i = 0; i < mCameraViews.size(); i++) {
-                mCameraViews.get(i).resume();
-            }
-        }
-
-        private void stopAllCameras() {
-            for (int i = 0; i < mCameraViews.size(); i++) {
-                mCameraViews.get(i).stop();
-            }
-        }
-    }*/
 }

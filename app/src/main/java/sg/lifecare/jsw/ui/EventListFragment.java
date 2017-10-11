@@ -75,7 +75,7 @@ public class EventListFragment extends Fragment {
 
         Timber.d("onResume");
 
-        mP2pCamera.addEventListener(mP2pCameraEventListener);
+        mP2pCamera.addEventListener(mP2pEventListener);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class EventListFragment extends Fragment {
 
         Timber.d("onPause");
 
-        mP2pCamera.removeEventListener(mP2pCameraEventListener);
+        mP2pCamera.removeEventListener();
     }
 
     private void setupView() {
@@ -137,7 +137,7 @@ public class EventListFragment extends Fragment {
 
     }
 
-    private P2pCamera.P2pCameraEventListener mP2pCameraEventListener = new P2pCamera.P2pCameraEventListener() {
+    private P2pCamera.P2pEventListener mP2pEventListener = new P2pCamera.P2pEventListener() {
 
         @Override
         public void onEventDataUpdate(P2pCamera p2pCamera) {

@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 import sg.lifecare.cumii.R;
 import sg.lifecare.cumii.data.server.response.AssistsedEntityResponse;
 import sg.lifecare.cumii.ui.base.BaseFragment;
+import sg.lifecare.jsw.data.CameraData;
 import timber.log.Timber;
 
 public class MemberFragment extends BaseFragment {
@@ -56,6 +57,8 @@ public class MemberFragment extends BaseFragment {
 
         mPosition = getArguments().getInt(KEY_MEMBER_POSITION);
         mMember = getDataManager().getMember(mPosition);
+
+        CameraData.getInstance(getContext()).clear();
     }
 
     @Override
@@ -89,10 +92,14 @@ public class MemberFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.member, menu);
+        if (CameraData.getInstance(getContext()).getCameras().size() > 0) {
+            inflater.inflate(R.menu.member, menu);
 
-        menu.findItem(R.id.action_camera).getIcon().setColorFilter(
-                ContextCompat.getColor(getContext(), R.color.primary_dark), PorterDuff.Mode.SRC_IN);
+            menu.findItem(R.id.action_camera).getIcon().setColorFilter(
+                    ContextCompat.getColor(getContext(), R.color.primary_dark), PorterDuff.Mode.SRC_IN);
+        } else {
+            menu.clear();
+        }
     }
 
     @Override
