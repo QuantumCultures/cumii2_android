@@ -54,7 +54,7 @@
     <string name="label_median_sleep_time">Median Sleep Time</string>
     <string name="label_day_activity">Day Activity</string>
     <string name="label_night_activity">Night Activity</string>
-    <string name="label_usually_active">Usually active</string>
+    <string name="label_activity_level">Activity Level</string>
     <string name="label_usually_inactive_for">Usually inactive for</string>
     <string name="label_longest_inactive_period">Longest inactive period</string>
     <string name="label_of_the_time">of the time</string>
@@ -62,7 +62,7 @@
     <string name="label_night_bathroom_activity">Night Bathroom Activity</string>
     <string name="label_used">Used</string>
     <string name="label_times">times</string>
-    <string name="label_duration">Duration</string>
+    <string name="label_duration">Duration (mins)</string>
     <string name="label_longest">Longest</string>
     <string name="label_usual">Usual</string>
     <string name="label_shortest">Shortest</string>
@@ -105,4 +105,7 @@
     <string name="jsw_label_camera">Camera</string>
 
     <string name="jsw_error_no_cameras_added">No cameras added</string>
+
+    <!-- FCM -->
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 </resources>

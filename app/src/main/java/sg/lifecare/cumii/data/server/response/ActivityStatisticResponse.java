@@ -11,8 +11,8 @@ public class ActivityStatisticResponse extends Response {
     private List<Data> data;
 
     @Override
-    public List<Data> getData() {
-        return data;
+    public Data getData() {
+        return data.size() > 0 ?  data.get(0) : null;
     }
 
     public class Data {
@@ -24,7 +24,7 @@ public class ActivityStatisticResponse extends Response {
         private int average_activity_duration;
         private Date date_of_analysis;
         private int day_average_activity_duration;
-        private int day_averate_inactivity_duration;
+        private int day_average_inactivity_duration;
         private int day_max_activity_duration;
         private int day_max_inactivity_duration;
         private int day_min_activity_duration;
@@ -40,6 +40,36 @@ public class ActivityStatisticResponse extends Response {
         private int night_min_activity_duration;
         private int night_min_inactivity_duration;
 
+        public int average_activity_level;
+        public int average_inactivity_level;
+        public int average_day_activity_level;
+        public int average_day_inactivity_level;
+        public int average_night_activity_level;
+        public int average_night_inactivity_level;
+
+        public int getDayAverageActivityLevel() {
+            return average_day_activity_level;
+        }
+
+        public int getDayAverageInactivityDuration() {
+            return day_average_inactivity_duration / 60;
+        }
+
+        public int getDayMaxInactivityDuration() {
+            return day_max_inactivity_duration / 60;
+        }
+
+        public int getNightAverageActivityLevel() {
+            return average_night_activity_level;
+        }
+
+        public int getNightAverageInactivityDuration() {
+            return night_average_inactivity_duration / 60;
+        }
+
+        public int getNightMaxInactivityDuration() {
+            return night_max_inactivity_duration / 60;
+        }
 
     }
 }

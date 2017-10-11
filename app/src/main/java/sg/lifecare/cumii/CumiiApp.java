@@ -2,8 +2,10 @@ package sg.lifecare.cumii;
 
 import android.support.multidex.MultiDexApplication;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 
+import io.fabric.sdk.android.Fabric;
 import sg.lifecare.cumii.data.DataManager;
 import timber.log.Timber;
 
@@ -14,6 +16,7 @@ public class CumiiApp extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         Timber.plant(new Timber.DebugTree());
 

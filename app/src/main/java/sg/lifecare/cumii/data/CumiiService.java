@@ -120,10 +120,10 @@ public interface CumiiService {
             @Query("PageSize")int pageSize,
             @Query("SkipSize")int skipSize);
 
-    @GET("/matthings/device/getConnectedGateways")
+    @GET("/mlifecare/device/getConnectedGateways")
     Observable<ConnectedDeviceResponse> getConnectedGateways(@Query("EntityId")String entityId);
 
-    @GET("/matthings/device/getConnectedSmartDevices")
+    @GET("/mlifecare/device/getConnectedSmartDevices")
     Observable<ConnectedDeviceResponse> getConnectedSmartDevices(@Query("EntityId")String entityId);
 
     @GET("/mlifecare/event/getActivityData")
@@ -134,7 +134,7 @@ public interface CumiiService {
     @GET("/mlifecare/event/getAggregatedActivityCount")
     Observable<AggregatedActivityResponse> getAggregatedActivity(@Query("EntityId") String entityId,
             @Query("StartDateTime") String start,
-            @Query("EndDateTime") String end, @Query("SortHourly") boolean sortHourly);
+            @Query("EndDateTime") String end/*, @Query("SortHourly") boolean sortHourly*/);
 
     @GET("/mlifecare/informativeData/getMedianWakeupAnalytics")
     Observable<WakeupMedianResponse> getMedianWakeup(@Query("EntityId") String entityId, @Query("Day") String day);

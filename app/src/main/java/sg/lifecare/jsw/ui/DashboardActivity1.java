@@ -19,11 +19,13 @@ import com.jsw.sdk.p2p.device.IRecvIOCtrlListener;
 import com.jsw.sdk.p2p.device.P2PDev;
 import com.jsw.sdk.p2p.device.extend.AUTH_AV_IO_Proto;
 import com.jsw.sdk.p2p.device.extend.Ex_IOCTRLAVStream;
+import com.jsw.sdk.p2p.device.extend.Ex_IOCTRLGetVideoParameterResp;
 import com.jsw.sdk.ui.TouchedTextureView;
 import com.jsw.sdk.ui.TouchedView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -41,8 +43,13 @@ public class DashboardActivity1 extends AppCompatActivity implements IRecvIOCtrl
     private CameraData mCameraData;
     private P2PDev mP2PDevice;
 
-    private static final String TEST_DID = "CGXX-000886-DHLRP";
-    private static final String TEST_MODEL = "WAPP-ESR";
+    //private static final String TEST_DID = "CGXX-000886-DHLRP";
+    //private static final String TEST_MODEL = "WAPP-ESR";
+    //private static final String TEST_PASSWORD = "0000";
+
+    private static final String TEST_DID = "DGXX-000222-FPFLP";
+    private static final String TEST_MODEL = "RVDP-DSI";
+    private static final String TEST_PASSWORD = "12345678";
 
     private int mScreenWidth;
     private int mScreenHeight;
@@ -74,7 +81,7 @@ public class DashboardActivity1 extends AppCompatActivity implements IRecvIOCtrl
 
 
         mCameraData = CameraData.getInstance(this);
-        //mCameraData.clear();
+        mCameraData.clear();
 
     }
 
@@ -93,7 +100,7 @@ public class DashboardActivity1 extends AppCompatActivity implements IRecvIOCtrl
 
         mP2PDevice = P2PDev.getP2PDev(TEST_DID);
         mP2PDevice.setDev_id1(TEST_DID);
-        mP2PDevice.setView_pwd("0000");
+        mP2PDevice.setView_pwd(TEST_PASSWORD);
 
         mCameraData.addCamera("Camera 1", mP2PDevice.getDev_id1(), mP2PDevice.getView_pwd());
     }
@@ -124,6 +131,7 @@ public class DashboardActivity1 extends AppCompatActivity implements IRecvIOCtrl
     public void onCheckStatusClick() {
         if (mP2PDevice != null) {
             Timber.d("view password: %d", mP2PDevice.isViewPwdOK());
+            getVideoParameter();
         }
     }
 
@@ -221,6 +229,14 @@ public class DashboardActivity1 extends AppCompatActivity implements IRecvIOCtrl
             p2PDev.sendIOCtrl_fetchArmSetting();
         }
 
+    }
+
+    private void getVideoParameter() {
+        byte[] VParaReq = new byte[8];
+        Arrays.fill(VParaReq, (byte)0);
+
+        mP2PDevice.sendIOCtrl_outer(AUTH_AV_IO_Proto.IOCTRL_TYPE_GET_VIDEO_PARAMETER_REQ,
+                VParaReq, VParaReq.length);
     }
 
     @Override
@@ -342,7 +358,7 @@ public class DashboardActivity1 extends AppCompatActivity implements IRecvIOCtrl
                     //p2PDev.changeDateTime();
                     //p2PDev.startGetOnePicFromRealStream();
 
-                    activity.displayVideo(p2PDev);
+                    //activity.displayVideo(p2PDev);
                     break;
 
                 case P2PDev.CONN_INFO_CONNECTE_COUNTDOWN:
@@ -391,7 +407,9 @@ public class DashboardActivity1 extends AppCompatActivity implements IRecvIOCtrl
                 case AUTH_AV_IO_Proto.IOCTRL_TYPE_DEVINFO_RESP:
                     // TODO: update camera to database
                     // TODO: refresh list
-                    activity.displayVideo(p2PDev);
+                    Timber.d("camera_model=%s", p2PDev.getModelOfDevInfo());
+                    //activity.displayVideo(p2PDev);
+                    //p2PDev.startGetOnePicFromRealStream();
                     break;
 
                 case AUTH_AV_IO_Proto.IOCTRL_TYPE_SETPASSWORD_RESP:
@@ -404,6 +422,15 @@ public class DashboardActivity1 extends AppCompatActivity implements IRecvIOCtrl
                     } else {
                         // TODO: show alert fail to show password
                     }
+                    break;
+
+                case AUTH_AV_IO_Proto.IOCTRL_TYPE_GET_VIDEO_PARAMETER_RESP:
+                    Ex_IOCTRLGetVideoParameterResp resp = new Ex_IOCTRLGetVideoParameterResp();
+                    resp.setData(data, 0);
+
+                    Timber.d("video_quality=%d", resp.getQuality());
+                    Timber.d("support_hd=%b", p2PDev.getParam().isSupportVideoQuality_HD());
+
                     break;
             }
         }
