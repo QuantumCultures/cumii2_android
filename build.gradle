@@ -7,6 +7,8 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
 
+        classpath 'com.google.gms:google-services:3.1.1'
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
 
@@ -19,6 +21,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com' }
     }
 }
 
@@ -37,7 +40,7 @@ ext {
     constrainLayoutVersion = '1.0.2'
     multidexVersion = '1.0.1'
 
-    playServiceVersion = '11.0.4'
+    playServiceVersion = '11.4.2'
 
     supportLibraryVersion = '25.3.1'
     gsonVersion = '2.8.1'
