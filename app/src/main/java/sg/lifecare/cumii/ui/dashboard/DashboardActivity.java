@@ -1,8 +1,11 @@
 package sg.lifecare.cumii.ui.dashboard;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -21,6 +24,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.net.SocketTimeoutException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,14 +35,17 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
 import sg.lifecare.cumii.R;
 import sg.lifecare.cumii.data.CumiiUtil;
+import sg.lifecare.cumii.data.server.response.ConnectedDeviceResponse;
 import sg.lifecare.cumii.data.server.response.EntityDetailResponse;
 import sg.lifecare.cumii.data.server.response.LogoutResponse;
 import sg.lifecare.cumii.data.server.response.Response;
+import sg.lifecare.cumii.service.CumiiMqttService;
 import sg.lifecare.cumii.ui.base.BaseActivity;
 import timber.log.Timber;
 
 public class DashboardActivity extends BaseActivity implements
-        MemberListFragment.MemberListFragmentListener {
+        MemberListFragment.MemberListFragmentListener,
+        DeviceListFragment.DeviceListFragmentListener {
 
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
@@ -53,6 +60,9 @@ public class DashboardActivity extends BaseActivity implements
 
     private CircleImageView mUserProfileImage;
     private TextView mUserNameText;
+
+    private CumiiMqttService mCumiiMqttService;
+    private boolean mIsBound = false;
 
     public static Intent getStartIntent(Context context) {
         Intent intent = new Intent(context, DashboardActivity.class);
@@ -76,7 +86,29 @@ public class DashboardActivity extends BaseActivity implements
         if (TextUtils.isEmpty(id)) {
             goToLoginActivity();
         } else {
+            startService(CumiiMqttService.getStartIntent(this));
             getUserEntity(id);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Timber.d("onStart");
+
+        bindService(CumiiMqttService.getStartIntent(this), mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        Timber.d("onStop");
+
+        if (mIsBound) {
+            unbindService(mConnection);
+            mIsBound = true;
         }
     }
 
@@ -231,7 +263,7 @@ public class DashboardActivity extends BaseActivity implements
                             return;
                         }
 
-                        if ((response != null) && !TextUtils.isEmpty(response.getErrorDesc())) {
+                        if (!TextUtils.isEmpty(response.getErrorDesc())) {
                             showServerError(response.getErrorDesc());
                         } else {
                             showServerError(getString(R.string.error_login_internet));
@@ -321,5 +353,44 @@ public class DashboardActivity extends BaseActivity implements
                 .add(R.id.fragment_content, MemberFragment.newInstance(position), MemberFragment.class.getSimpleName())
                 .addToBackStack(MemberFragment.class.getSimpleName())
                 .commit();
+    }
+
+    public CumiiMqttService getCumiiMqttService() {
+        if (mIsBound) {
+            return mCumiiMqttService;
+        }
+
+        return null;
+    }
+
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder service) {
+            Timber.d("onServiceConnected");
+
+            CumiiMqttService.LocalBinder binder = (CumiiMqttService.LocalBinder) service;
+            mCumiiMqttService = binder.getService();
+            mIsBound = true;
+
+            mCumiiMqttService.connect();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            Timber.d("onServiceDisconnected");
+            mIsBound = false;
+        }
+    };
+
+    @Override
+    public void onGatewayUpdate(String entityId, List<ConnectedDeviceResponse.Data> gateways) {
+
+        // assume only one gateway
+        if (gateways.size() > 0) {
+            mCumiiMqttService.subscribeCameraTopics(entityId, gateways.get(0).getId());
+            mCumiiMqttService.subscribeZwaveTopics(entityId, gateways.get(0).getId());
+        }
     }
 }

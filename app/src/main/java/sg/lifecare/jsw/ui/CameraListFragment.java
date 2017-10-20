@@ -58,7 +58,7 @@ public class CameraListFragment extends Fragment{
     }
 
     private void setupView() {
-        mSwipeView.setEnabled(false);
+        //mSwipeView.setEnabled(false);
         mMessageText.setVisibility(View.INVISIBLE);
 
         mListView.setHasFixedSize(true);
@@ -66,6 +66,21 @@ public class CameraListFragment extends Fragment{
 
         mAdapter = new CameraListAdapter(mListView, mCameraItemClickListener);
         mListView.setAdapter(mAdapter);
+
+        mSwipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (mP2pCameras.size() > 0) {
+                    for (P2pCamera p2pCamera : mP2pCameras) {
+                        if (p2pCamera.getP2pDev().isConnected()) {
+                            p2pCamera.getP2pDev().getSnapshot();
+                        }
+                    }
+                }
+
+                mSwipeView.setRefreshing(false);
+            }
+        });
     }
 
     @Override

@@ -1,6 +1,7 @@
 package sg.lifecare.cumii.data;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,18 @@ public class DataManager {
         }
 
         return mMembers;
+    }
+
+    public AssistsedEntityResponse.Data getMemeberById(@NonNull String id) {
+        if ((mMembers != null) && (mMembers.size() > 0)) {
+            for (AssistsedEntityResponse.Data member : mMembers) {
+                if (id.equals(member.getId())) {
+                    return member;
+                }
+            }
+        }
+
+        return null;
     }
 
     public AssistsedEntityResponse.Data getMember(int position) {

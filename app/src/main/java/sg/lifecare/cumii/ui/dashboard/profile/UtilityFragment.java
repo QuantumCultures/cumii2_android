@@ -20,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
 import sg.lifecare.cumii.R;
@@ -111,25 +112,33 @@ public class UtilityFragment extends BaseFragment {
                 }, throwable -> {
                     Timber.e(throwable, throwable.getMessage());
 
-                    //mSwipeView.setRefreshing(false);
+                    mSwipeView.setRefreshing(false);
 
                     if (throwable instanceof SocketTimeoutException) {
                         getBaseActivity().showNetworkError();
-                    } else if (throwable instanceof HttpException){
+                    } else if (throwable instanceof HttpException) {
                         if (((HttpException) throwable).code() == 401) {
                             getBaseActivity().goToLoginActivity();
                             return;
                         }
 
-                        Type type = new TypeToken<AssistsedEntityResponse>() {}.getType();
+                        Type type = new TypeToken<AssistsedEntityResponse>() {
+                        }.getType();
                         Response response = CumiiUtil.getResponse(
                                 ((HttpException) throwable).response().errorBody(), type);
 
                         if ((response != null) && !TextUtils.isEmpty(response.getErrorDesc())) {
                             getBaseActivity().showServerError(response.getErrorDesc());
                         } else {
-                            getBaseActivity().showServerError(getString(R.string.error_login_internet));
+                            getBaseActivity().showServerError(
+                                    getString(R.string.error_login_internet));
                         }
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        Timber.d("complete");
+                        mSwipeView.setRefreshing(false);
                     }
                 }));
 

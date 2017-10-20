@@ -77,7 +77,7 @@ public class CameraListAdapter extends RecyclerView.Adapter<CameraListAdapter.Ca
 
     @Override
     public void onBindViewHolder(CameraViewHolder holder, int position) {
-        Timber.d("onBindViewHolder: position = %d", position);
+        Timber.d("onBindViewHolder: position = %d, id=%s", position, mP2pCameras.get(position).getP2pDev().getDev_id1());
         holder.bindView(mP2pCameras.get(position));
     }
 
@@ -174,8 +174,11 @@ public class CameraListAdapter extends RecyclerView.Adapter<CameraListAdapter.Ca
 
             Bitmap snapshot = camera.getP2pDev().getSnapshot();
             if (snapshot != null) {
+                mSnapshotView.setVisibility(View.VISIBLE);
                 mSnapshotView.setScaleType(ImageView.ScaleType.FIT_XY);
                 mSnapshotView.setImageBitmap(snapshot);
+            } else {
+                mSnapshotView.setVisibility(View.INVISIBLE);
             }
 
             mSnapshotView.setOnClickListener(new View.OnClickListener() {

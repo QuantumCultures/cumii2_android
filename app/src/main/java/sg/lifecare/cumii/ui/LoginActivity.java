@@ -30,6 +30,7 @@ import sg.lifecare.cumii.R;
 import sg.lifecare.cumii.data.CumiiUtil;
 import sg.lifecare.cumii.data.server.response.LoginResponse;
 import sg.lifecare.cumii.data.server.response.Response;
+import sg.lifecare.cumii.service.CumiiMqttService;
 import sg.lifecare.cumii.ui.base.BaseActivity;
 import sg.lifecare.cumii.ui.dashboard.DashboardActivity;
 import timber.log.Timber;
@@ -66,6 +67,8 @@ public class LoginActivity extends BaseActivity {
             mEmailEdit.setText(CumiiConfig.TEST_USERNAME);
             mPasswordEdit.setText(CumiiConfig.TEST_PASSWORD);
         }
+
+        stopService(CumiiMqttService.getStartIntent(this));
     }
 
     @OnClick(R.id.email_sign_in_button)

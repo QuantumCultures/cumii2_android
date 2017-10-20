@@ -1,5 +1,6 @@
 package sg.lifecare.cumii.ui.dashboard;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -47,8 +48,13 @@ public class DeviceListFragment extends BaseFragment {
     @BindView(R.id.message)
     TextView mMessageText;
 
+    private DeviceListFragmentListener mCallback;
     private AssistsedEntityResponse.Data mMember;
     private DeviceListAdapter mDeviceAdapter;
+
+    interface DeviceListFragmentListener {
+        void onGatewayUpdate(String entityId, List<ConnectedDeviceResponse.Data> gateways);
+    }
 
     public static DeviceListFragment newInstance(int position) {
         Bundle data = new Bundle();
@@ -58,6 +64,17 @@ public class DeviceListFragment extends BaseFragment {
         fragment.setArguments(data);
 
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof DeviceListFragmentListener) {
+            mCallback = (DeviceListFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement DeviceListFragmentListener");
+        }
     }
 
     @Override
@@ -154,6 +171,10 @@ public class DeviceListFragment extends BaseFragment {
     private void onGetGatewaysResult(List<ConnectedDeviceResponse.Data> gateways) {
 
         getSmartDevices(mMember.getId(), gateways);
+
+        if ((mCallback != null) && (gateways != null)) {
+            mCallback.onGatewayUpdate(mMember.getId(), gateways);
+        }
     }
 
     private void getSmartDevices(String id, final List<ConnectedDeviceResponse.Data> gateways) {

@@ -83,6 +83,8 @@ public class CameraData {
     public void addCamera(@NonNull String name, @NonNull String did, @NonNull String password) {
         boolean found = false;
 
+        Timber.d("addCamera: name=%s, did=%s, password=%s", name, did, password);
+
         if (mCameras.size() > 0) {
             for (Camera camera : mCameras) {
 

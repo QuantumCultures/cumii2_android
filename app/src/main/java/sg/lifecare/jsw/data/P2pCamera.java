@@ -231,6 +231,8 @@ public class P2pCamera {
                 return;
             }
 
+            Timber.d("P2pDevResponseHandler: %s", p2PDev.getDev_id1());
+
             switch (code) {
 
                 case P2PDev.STATUS_INFO_AV_ONLINENUM:

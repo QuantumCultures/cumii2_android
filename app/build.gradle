@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://repo.eclipse.org/content/repositories/paho-snapshots/" }
     }
 
     dependencies {
@@ -67,6 +68,9 @@ dependencies {
     compile "com.google.firebase:firebase-messaging:$rootProject.playServiceVersion"
     compile "com.google.firebase:firebase-crash:$rootProject.playServiceVersion"
     compile "com.google.android.gms:play-services-gcm:$rootProject.playServiceVersion"
+    compile "com.google.android.gms:play-services-maps:$rootProject.playServiceVersion"
+    compile "com.google.android.gms:play-services-location:$rootProject.playServiceVersion"
+    compile "com.google.android.gms:play-services-places:$rootProject.playServiceVersion"
 
     compile "com.google.code.gson:gson:$rootProject.gsonVersion"
     compile "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
@@ -90,15 +94,16 @@ dependencies {
     compile "joda-time:joda-time:$rootProject.jodatimeVersion"
     compile "de.hdodenhof:circleimageview:$rootProject.circleImageViewVersion"
     compile "com.github.bumptech.glide:glide:$rootProject.glideVersion"
-    compile "com.github.PhilJay:MPAndroidChart:$project.mpAndroidChartVersion"
+    compile "com.github.PhilJay:MPAndroidChart:$rootProject.mpAndroidChartVersion"
 
-    compile 'com.scottyab:secure-preferences-lib:0.1.4'
+    compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$rootProject.pahoClientVersion"
+    compile "org.eclipse.paho:org.eclipse.paho.android.service:$rootProject.pahoAndroidVersion"
 
-
-    testCompile 'junit:junit:4.12'
     compile('com.crashlytics.sdk.android:crashlytics:2.7.0@aar') {
         transitive = true;
     }
+    compile 'com.scottyab:secure-preferences-lib:0.1.4'
+    testCompile 'junit:junit:4.12'
 }
 
 apply plugin: 'com.google.gms.google-services'

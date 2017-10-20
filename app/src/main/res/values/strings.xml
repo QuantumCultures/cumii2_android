@@ -2,8 +2,8 @@
     <string name="app_name">Cumii</string>
 
     <!-- Fixes bug -->
-    <item name="visible" type="id"/>
-    <item name="masked" type="id"/>
+    <item name="visible" type="id" />
+    <item name="masked" type="id" />
 
     <!-- drawer -->
     <string name="drawer_open">Open drawer</string>
@@ -21,6 +21,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_retry">Retry</string>
     <string name="action_camera">Camera</string>
+    <string name="action_call">Call</string>
 
     <string name="nav_edit_profile">Edit Profile</string>
     <string name="nav_privacy">Privacy</string>
@@ -44,6 +45,7 @@
     <string name="title_events">Events</string>
     <string name="title_profile">Profile</string>
     <string name="title_devices">Devices</string>
+    <string name="title_control">Control</string>
 
     <string name="label_gateway">Gateway</string>
     <string name="label_smart_device">Smart Device</string>
@@ -74,7 +76,17 @@
     <string name="label_kwh">kWh</string>
     <string name="label_l">L</string>
     <string name="label_sgd">S$</string>
+    <string name="label_actions">Actions</string>
+    <string name="label_enable_away_mode">Enable Away Mode</string>
+    <string name="label_enable_away_mode_desc">Temporary disable the alert until the next activity is detected</string>
+    <string name="label_disable_alert">Disable Alert</string>
+    <string name="label_disable_alert_desc">Stop receiving this alert until alert is armed again</string>
+    <string name="label_panic">Panic</string>
 
+    <string name="message_call_out">Call %1$s?</string>
+    <string name="message_panic">%1$s is in panic. Please respond!</string>
+    <string name="message_away_mode">This alert will be disabled until the next activity is detected</string>
+    <string name="message_disarm_mode">You will not receive this alert</string>
 
     <!-- DateUtil -->
     <string name="date_a_few_seconds_ago">a few seconds ago</string>
@@ -95,7 +107,6 @@
     </string>
 
 
-
     <string name="jsw_label_connected">Connected</string>
     <string name="jsw_label_connecting">Connecting</string>
     <string name="jsw_label_disconnected">Disconnected</string>
@@ -108,4 +119,16 @@
 
     <!-- FCM -->
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="title_activity_maps">Map</string>
+
+
+    <!-- ZWave -->
+    <string name="zwave_format_percentage">%1$.1f %%</string>
+    <string name="zwave_format_celsius">%1$.1f \u2103</string>
+    <string name="zwave_format_fahrenheit">%1$.1f \u2109</string>
+    <string name="zwave_format_lux">%1$.1f lx</string>
+    <string name="zwave_format_absolute_humidity">%1$.1f g/\u33a5</string>
+
+    <string name="zwave_label_on">On</string>
+    <string name="zwave_label_off">Off</string>
 </resources>

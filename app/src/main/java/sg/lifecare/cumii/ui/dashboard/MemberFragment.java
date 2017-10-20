@@ -23,8 +23,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import sg.lifecare.cumii.R;
 import sg.lifecare.cumii.data.server.response.AssistsedEntityResponse;
+import sg.lifecare.cumii.service.CumiiMqttService;
 import sg.lifecare.cumii.ui.base.BaseFragment;
 import sg.lifecare.jsw.data.CameraData;
+import sg.lifecare.zwave.ui.ZWaveDeviceListFragment;
 import timber.log.Timber;
 
 public class MemberFragment extends BaseFragment {
@@ -78,9 +80,10 @@ public class MemberFragment extends BaseFragment {
         adapter.addFragment(EventListFragment.newInstance(mPosition), getString(R.string.title_events));
         adapter.addFragment(ProfileFragment.newInstance(mPosition), getString(R.string.title_profile));
         adapter.addFragment(DeviceListFragment.newInstance(mPosition), getString(R.string.title_devices));
+        adapter.addFragment(ZWaveDeviceListFragment.newInstance(mPosition), getString(R.string.title_control));
 
         mViewPager.setAdapter(adapter);
-        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setOffscreenPageLimit(4);
 
         mTabs.post(new Runnable() {
             @Override
@@ -91,15 +94,33 @@ public class MemberFragment extends BaseFragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        Timber.d("onDestroy");
+
+        CumiiMqttService mqttService = ((DashboardActivity)getBaseActivity()).getCumiiMqttService();
+
+        if (mqttService != null) {
+            mqttService.unsubscribeCameraTopics();
+            mqttService.unsubscribeZwaveTopics();
+        }
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (CameraData.getInstance(getContext()).getCameras().size() > 0) {
+        /*if (CameraData.getInstance(getContext()).getCameras().size() > 0) {
             inflater.inflate(R.menu.member, menu);
 
             menu.findItem(R.id.action_camera).getIcon().setColorFilter(
                     ContextCompat.getColor(getContext(), R.color.primary_dark), PorterDuff.Mode.SRC_IN);
         } else {
             menu.clear();
-        }
+        }*/
+        inflater.inflate(R.menu.member, menu);
+
+        menu.findItem(R.id.action_camera).getIcon().setColorFilter(
+                ContextCompat.getColor(getContext(), R.color.primary_dark), PorterDuff.Mode.SRC_IN);
     }
 
     @Override

@@ -1,9 +1,7 @@
 package sg.lifecare.cumii.data.server.response;
 
 import android.text.TextUtils;
-import android.widget.TextView;
 
-import com.google.gson.InstanceCreator;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;

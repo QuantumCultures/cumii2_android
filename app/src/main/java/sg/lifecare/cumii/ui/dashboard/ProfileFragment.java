@@ -70,9 +70,8 @@ public class ProfileFragment extends BaseFragment {
 
         mAdapter = new ViewPagerAdapter(getChildFragmentManager());
 
-        mAdapter.addFragment(ActitvityFragment.newInstance(mPosition), ContextCompat.getDrawable(getContext(), R.drawable.tab_activity_selector));
+        //mAdapter.addFragment(ActitvityFragment.newInstance(mPosition), ContextCompat.getDrawable(getContext(), R.drawable.tab_activity_selector));
         mAdapter.addFragment(UtilityFragment.newInstance(mPosition), ContextCompat.getDrawable(getContext(), R.drawable.tab_utility_selector));
-
 
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(mAdapter.getCount());

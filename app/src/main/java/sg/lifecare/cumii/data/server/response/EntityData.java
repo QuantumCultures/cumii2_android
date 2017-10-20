@@ -50,6 +50,14 @@ public class EntityData {
         return phones;
     }
 
+    public Response.Phone getDefaultPhone() {
+        if ((phones != null) && (phones.size() > 0)) {
+            return phones.get(0);
+        }
+
+        return null;
+    }
+
     public Date getLastUpdate() {
         return last_update;
     }

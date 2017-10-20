@@ -60,4 +60,6 @@ ext {
     circleImageViewVersion = '2.1.0'
     glideVersion = '4.0.0-RC0'
     mpAndroidChartVersion = 'v3.0.2'
+    pahoClientVersion = '1.1.0'
+    pahoAndroidVersion = '1.1.1'
 }

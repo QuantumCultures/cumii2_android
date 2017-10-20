@@ -43,13 +43,13 @@ public class DashboardActivity1 extends AppCompatActivity implements IRecvIOCtrl
     private CameraData mCameraData;
     private P2PDev mP2PDevice;
 
-    //private static final String TEST_DID = "CGXX-000886-DHLRP";
-    //private static final String TEST_MODEL = "WAPP-ESR";
-    //private static final String TEST_PASSWORD = "0000";
+    private static final String TEST_DID = "CGXX-000886-DHLRP";
+    private static final String TEST_MODEL = "WAPP-ESR";
+    private static final String TEST_PASSWORD = "0000";
 
-    private static final String TEST_DID = "DGXX-000222-FPFLP";
-    private static final String TEST_MODEL = "RVDP-DSI";
-    private static final String TEST_PASSWORD = "12345678";
+    //private static final String TEST_DID = "DGXX-000222-FPFLP";
+    //private static final String TEST_MODEL = "RVDP-DSI";
+    //private static final String TEST_PASSWORD = "12345678";
 
     private int mScreenWidth;
     private int mScreenHeight;

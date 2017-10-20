@@ -19,6 +19,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -26,12 +27,16 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import sg.lifecare.cumii.BuildConfig;
 import sg.lifecare.cumii.CumiiConfig;
+import sg.lifecare.cumii.data.server.data.AcknowledgeData;
+import sg.lifecare.cumii.data.server.data.AlertRuleData;
+import sg.lifecare.cumii.data.server.response.AcknowledgeResponse;
 import sg.lifecare.cumii.data.server.response.ActivityDataResponse;
 import sg.lifecare.cumii.data.server.response.ActivityStatisticResponse;
 import sg.lifecare.cumii.data.server.response.AggregatedActivityResponse;
 import sg.lifecare.cumii.data.server.response.AssistsedEntityResponse;
 import sg.lifecare.cumii.data.server.response.BathroomStatisticResponse;
 import sg.lifecare.cumii.data.server.response.ConnectedDeviceResponse;
+import sg.lifecare.cumii.data.server.response.EditRuleResponse;
 import sg.lifecare.cumii.data.server.response.EnergyConsumptionResponse;
 import sg.lifecare.cumii.data.server.response.EntityDetailResponse;
 import sg.lifecare.cumii.data.server.response.LoginResponse;
@@ -120,10 +125,10 @@ public interface CumiiService {
             @Query("PageSize")int pageSize,
             @Query("SkipSize")int skipSize);
 
-    @GET("/mlifecare/device/getConnectedGateways")
+    @GET("/matthings/device/getConnectedGateways")
     Observable<ConnectedDeviceResponse> getConnectedGateways(@Query("EntityId")String entityId);
 
-    @GET("/mlifecare/device/getConnectedSmartDevices")
+    @GET("/matthings/device/getConnectedSmartDevices")
     Observable<ConnectedDeviceResponse> getConnectedSmartDevices(@Query("EntityId")String entityId);
 
     @GET("/mlifecare/event/getActivityData")
@@ -137,21 +142,33 @@ public interface CumiiService {
             @Query("EndDateTime") String end/*, @Query("SortHourly") boolean sortHourly*/);
 
     @GET("/mlifecare/informativeData/getMedianWakeupAnalytics")
-    Observable<WakeupMedianResponse> getMedianWakeup(@Query("EntityId") String entityId, @Query("Day") String day);
+    Observable<WakeupMedianResponse> getMedianWakeup(@Query("EntityId") String entityId,
+            @Query("Day") String day);
 
     @GET("/mlifecare/informativeData/getMedianSleepAnalytics")
-    Observable<SleepMedianResponse> getMedianSleep(@Query("EntityId") String entityId, @Query("Day") String day);
+    Observable<SleepMedianResponse> getMedianSleep(@Query("EntityId") String entityId,
+            @Query("Day") String day);
 
     @GET("/mlifecare/informativeData/getActivityStatisticalAnalytics")
-    Observable<ActivityStatisticResponse> getActivityStatistic(@Query("EntityId") String entityId, @Query("Day") String day);
+    Observable<ActivityStatisticResponse> getActivityStatistic(@Query("EntityId") String entityId,
+            @Query("Day") String day);
 
     @GET("/mlifecare/informativeData/getBathroomStatisticalAnalytics")
-    Observable<BathroomStatisticResponse> getBathroomStatistic(@Query("EntityId") String entityId, @Query("Day") String day);
+    Observable<BathroomStatisticResponse> getBathroomStatistic(@Query("EntityId") String entityId,
+            @Query("Day") String day);
 
-    @GET("/mlifecare/event/getEnergyConsumptionAnalytics")
-    Observable<EnergyConsumptionResponse> getEnergyConsumption(@Query("EntityId") String entityId, @Query("Day") String day);
+    @GET("/matthings/event/getEnergyConsumptionAnalytics")
+    Observable<EnergyConsumptionResponse> getEnergyConsumption(@Query("EntityId") String entityId,
+            @Query("Day") String day);
 
-    @GET("/mlifecare/event/getWaterConsumptionAnalytics")
-    Observable<WaterConsumptionResponse> getWaterConsumption(@Query("EntityId") String entityId, @Query("Day") String day);
+    @GET("/matthings/event/getWaterConsumptionAnalytics")
+    Observable<WaterConsumptionResponse> getWaterConsumption(@Query("EntityId") String entityId,
+            @Query("Day") String day);
+
+    @POST("/mlifecare/rule/acknowledgeRule")
+    Observable<AcknowledgeResponse> postAcknowledge(@Body AcknowledgeData post);
+
+    @POST("/mlifecare/rule/editRule")
+    Observable<EditRuleResponse> postEditAlertRule(@Body AlertRuleData post);
 
 }
