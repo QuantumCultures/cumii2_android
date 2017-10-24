@@ -25,6 +25,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 import sg.lifecare.cumii.BuildConfig;
 import sg.lifecare.cumii.CumiiConfig;
 import sg.lifecare.cumii.data.server.data.AcknowledgeData;
@@ -130,6 +131,10 @@ public interface CumiiService {
 
     @GET("/matthings/device/getConnectedSmartDevices")
     Observable<ConnectedDeviceResponse> getConnectedSmartDevices(@Query("EntityId")String entityId);
+
+    @GET("/matthings/device/getConnectedSmartDevices?ProductClass=56332d8be4b0292685f753c0")
+    Observable<ConnectedDeviceResponse> getConnectedCameras(@Query("EntityId")String entityId,
+            @Query("GatewayId")String gatewayId);
 
     @GET("/mlifecare/event/getActivityData")
     Observable<ActivityDataResponse> getActivitiesData(@Query("EntityId")String entityId,
