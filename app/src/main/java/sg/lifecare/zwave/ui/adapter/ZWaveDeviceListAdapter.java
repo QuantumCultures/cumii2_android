@@ -165,7 +165,7 @@ public class ZWaveDeviceListAdapter extends RecyclerView.Adapter<ZWaveDeviceList
 
         @Override
         void bindView(Sensor item) {
-            List<MultilevelSensorReport> reports = item.mZWaveDevice.getMultilevelReports();
+            List<MultilevelSensorReport> reports = item.mZWaveDevice.getMultilevelSensorReports();
             if (reports.size() > 0) {
                 for (MultilevelSensorReport report : reports) {
                     switch (report.getSensorType()) {
