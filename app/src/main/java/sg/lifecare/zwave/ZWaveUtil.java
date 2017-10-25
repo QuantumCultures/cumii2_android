@@ -44,6 +44,6 @@ public class ZWaveUtil {
             return devices;
         }
 
-        return new ArrayList<>();
+        return new ArrayList<ZWaveDevice>();
     }
 }

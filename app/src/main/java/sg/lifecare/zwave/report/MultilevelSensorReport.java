@@ -1,11 +1,13 @@
 package sg.lifecare.zwave.report;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import timber.log.Timber;
-
 public class MultilevelSensorReport {
+
+    private static final String TAG = "MultilevelSensorReport";
 
     public static final int AIR_TEMPERATURE = 0x01;
     public static final int GENERAL_PURPOSE_VALUE = 0x02;
@@ -83,7 +85,7 @@ public class MultilevelSensorReport {
         int size = getSize();
         double value = 0d;
 
-        Timber.d("getSensorData: precision=%d, scaleType=%d, size=%d", precision, scaleType, size);
+        Log.d(TAG, String.format("getSensorData: precision=%d, scaleType=%d, size=%d", precision, scaleType, size));
 
         if (data.size() == size) {
             if (size == 1) {
@@ -97,12 +99,12 @@ public class MultilevelSensorReport {
                         + (this.data.get(0) & 0x000000ff);
             }
 
-            Timber.d("getSensorData: precisionPowe=%f, value=%f", Math.pow(10, precision), value);
+            Log.d(TAG, String.format("getSensorData: precisionPowe=%f, value=%f", Math.pow(10, precision), value));
 
             value = value / Math.pow(10, precision);
 
         } else {
-            Timber.d("getSensorData: data size not match");
+            Log.d(TAG, "getSensorData: data size not match");
         }
 
         return value;
