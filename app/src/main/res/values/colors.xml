@@ -38,4 +38,8 @@
     <color name="jsw_online">#1B5E20</color>
     <color name="jsw_normal">@color/black_87</color>
     <color name="jsw_offline">#B71C1C</color>
+
+
+    <color name="zwave_on">#00FF00</color>
+    <color name="zwave_off">#FF0000</color>
 </resources>

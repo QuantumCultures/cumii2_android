@@ -25,16 +25,24 @@ public class AssistsedEntityResponse extends Response {
         private String status;
         private String type;
 
+        public List<Device> getDevices() {
+            return devices;
+        }
+
         public int getGpsBatteryLevel() {
             return gps_int_value;
         }
 
     }
 
-    class Device {
+    public class Device {
         private String _id;
         private String name;
         private String type;
+
+        public String getId() {
+            return _id;
+        }
     }
 
     class Module {

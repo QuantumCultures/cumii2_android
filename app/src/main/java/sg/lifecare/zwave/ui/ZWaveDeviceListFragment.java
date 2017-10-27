@@ -25,8 +25,10 @@ import sg.lifecare.cumii.R;
 import sg.lifecare.cumii.data.server.response.AssistsedEntityResponse;
 import sg.lifecare.cumii.service.CumiiMqttService;
 import sg.lifecare.cumii.ui.base.BaseFragment;
+import sg.lifecare.cumii.ui.dashboard.DashboardActivity;
 import sg.lifecare.zwave.ZWaveDevice;
 import sg.lifecare.zwave.ZWaveUtil;
+import sg.lifecare.zwave.control.Control;
 import sg.lifecare.zwave.ui.adapter.ZWaveDeviceListAdapter;
 import timber.log.Timber;
 
@@ -108,12 +110,39 @@ public class ZWaveDeviceListFragment extends BaseFragment {
 
         mDeviceAdapter = new ZWaveDeviceListAdapter(getContext());
         mDeviceListView.setAdapter(mDeviceAdapter);
+
+        mDeviceAdapter.setOnOffSwitchListener(mOnOffSwitchListener);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
+
+    private ZWaveDeviceListAdapter.OnOffSwitchListener mOnOffSwitchListener = new ZWaveDeviceListAdapter.OnOffSwitchListener() {
+
+        @Override
+        public void onOnOffClick(ZWaveDevice device) {
+            Timber.d("onOffClick");
+
+            CumiiMqttService mqttService = ((DashboardActivity)getBaseActivity()).getCumiiMqttService();
+            if (mqttService != null) {
+                List<AssistsedEntityResponse.Device> devices = mMember.getDevices();
+                if ((devices != null) && (devices.size() > 0)) {
+
+                    Control control = new Control();
+                    control.setNodeId(device.getNodeId());
+                    control.setValue(device.getBinarySwitchReport().isOn() ?
+                            Control.OFF : Control.ON);
+
+                    mqttService.publishZwaveSet(mMember.getId(), devices.get(0).getId(),
+                            Control.TITLE, Control.toJson(control));
+                }
+
+
+            }
+        }
+    };
 
 
     private BroadcastReceiver mMqttReceiver = new BroadcastReceiver() {

@@ -148,8 +148,26 @@ public class CumiiMqttService extends Service implements MqttCallbackExtended {
         return entityId + "/gateway/" + gatewayId + "/camera/+/status";
     }
 
+    private String getZwaveMainTopic(String entityId, String gatewayId) {
+        return entityId + "/gateway/" + gatewayId + "/zwave";
+    }
+
     private String getZwaveStatusTopic(String entityId, String gatewayId) {
-        return entityId + "/gateway/" + gatewayId + "/zwave/status";
+        return getZwaveMainTopic(entityId, gatewayId) + "/status";
+    }
+
+    public void publishZwaveSet(String entityId, String gatewayId, String subtopic, String message) {
+        String topic =  getZwaveMainTopic(entityId, gatewayId) + "/set/" + subtopic;
+
+        if (!TextUtils.isEmpty(message) && mClient.isConnected()) {
+            MqttMessage mqttMessage = new MqttMessage(message.getBytes());
+
+            try {
+                mClient.publish(topic, mqttMessage);
+            } catch (MqttException e) {
+                Timber.e(e, e.getMessage());
+            }
+        }
     }
 
     public void subscribeCameraTopics(String entityId, String gatewayId) {

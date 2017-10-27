@@ -1,7 +1,9 @@
 package sg.lifecare.zwave.ui.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +11,14 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import sg.lifecare.cumii.R;
 import sg.lifecare.zwave.ZWaveDevice;
+import sg.lifecare.zwave.report.BinarySwitchReport;
+import sg.lifecare.zwave.report.MeterReport;
 import sg.lifecare.zwave.report.MultilevelSensorReport;
 import sg.lifecare.zwave.report.multilevelsensor.AirTemperature;
 import sg.lifecare.zwave.report.multilevelsensor.Humidity;
@@ -25,6 +30,8 @@ public class ZWaveDeviceListAdapter extends RecyclerView.Adapter<ZWaveDeviceList
 
     private Context mContext;
     private ArrayList<Item> mItems = new ArrayList<>();
+
+    private OnOffSwitchListener mOnOffSwitchListener;
 
     public ZWaveDeviceListAdapter(Context context) {
         mContext = context;
@@ -62,6 +69,10 @@ public class ZWaveDeviceListAdapter extends RecyclerView.Adapter<ZWaveDeviceList
     @Override
     public int getItemCount() {
         return mItems.size();
+    }
+
+    public void setOnOffSwitchListener(OnOffSwitchListener listener) {
+        mOnOffSwitchListener = listener;
     }
 
     public void addAllDevices(List<ZWaveDevice> devices) {
@@ -124,7 +135,7 @@ public class ZWaveDeviceListAdapter extends RecyclerView.Adapter<ZWaveDeviceList
 
     abstract class ItemViewHolder<T extends Item> extends RecyclerView.ViewHolder {
 
-        public ItemViewHolder(View itemView) {
+        ItemViewHolder(View itemView) {
             super(itemView);
         }
 
@@ -133,7 +144,7 @@ public class ZWaveDeviceListAdapter extends RecyclerView.Adapter<ZWaveDeviceList
 
     class EmptyViewHolder extends ItemViewHolder<Empty> {
 
-        public EmptyViewHolder(View itemView) {
+        EmptyViewHolder(View itemView) {
             super(itemView);
 
             ButterKnife.bind(this, itemView);
@@ -146,6 +157,12 @@ public class ZWaveDeviceListAdapter extends RecyclerView.Adapter<ZWaveDeviceList
     }
 
     class SensorViewHolder extends ItemViewHolder<Sensor> {
+
+        @BindView(R.id.device_name_text)
+        TextView mDeviceNameText;
+
+        @BindView(R.id.no_data_label)
+        TextView mNoDataLabel;
 
         @BindView(R.id.air_temperature_text)
         TextView mAirTemperatureText;
@@ -166,7 +183,18 @@ public class ZWaveDeviceListAdapter extends RecyclerView.Adapter<ZWaveDeviceList
         @Override
         void bindView(Sensor item) {
             List<MultilevelSensorReport> reports = item.mZWaveDevice.getMultilevelSensorReports();
-            if (reports.size() > 0) {
+            String name = item.mZWaveDevice.getName();
+
+            if (!TextUtils.isEmpty(name)) {
+                mDeviceNameText.setText(name);
+            }
+
+            if ((reports != null) && (reports.size() > 0)) {
+                mNoDataLabel.setVisibility(View.INVISIBLE);
+                mAirTemperatureText.setVisibility(View.VISIBLE);
+                mLuminanceText.setVisibility(View.VISIBLE);
+                mHumidityText.setVisibility(View.VISIBLE);
+
                 for (MultilevelSensorReport report : reports) {
                     switch (report.getSensorType()) {
                         case MultilevelSensorReport.AIR_TEMPERATURE:
@@ -202,6 +230,11 @@ public class ZWaveDeviceListAdapter extends RecyclerView.Adapter<ZWaveDeviceList
                     }
                 }
 
+            } else {
+                mNoDataLabel.setVisibility(View.VISIBLE);
+                mAirTemperatureText.setVisibility(View.INVISIBLE);
+                mLuminanceText.setVisibility(View.INVISIBLE);
+                mHumidityText.setVisibility(View.INVISIBLE);
             }
 
         }
@@ -209,8 +242,14 @@ public class ZWaveDeviceListAdapter extends RecyclerView.Adapter<ZWaveDeviceList
 
     class OnOffSwitchViewHolder extends ItemViewHolder<OnOffSwitch> {
 
+        @BindView(R.id.device_name_text)
+        TextView mDeviceNameText;
+
         @BindView(R.id.on_off_text)
         TextView mOnOffText;
+
+        @BindView(R.id.data_text)
+        TextView mDataText;
 
         OnOffSwitchViewHolder(View itemView) {
             super(itemView);
@@ -220,8 +259,69 @@ public class ZWaveDeviceListAdapter extends RecyclerView.Adapter<ZWaveDeviceList
 
         @Override
         void bindView(OnOffSwitch item) {
-            mOnOffText.setText("OFF");
+
+
+            mOnOffText.setText(itemView.getContext().getString(R.string.zwave_label_no_data));
+
+            BinarySwitchReport binarySwitchReport = item.mZWaveDevice.getBinarySwitchReport();
+            List<MeterReport> meterReports = item.mZWaveDevice.getMeterReports();
+            String name = item.mZWaveDevice.getName();
+
+            if (!TextUtils.isEmpty(name)) {
+                mDeviceNameText.setText(name);
+            }
+
+            if (binarySwitchReport != null) {
+
+                if (binarySwitchReport.isOn()) {
+                    mOnOffText.setText(itemView.getContext().getString(R.string.zwave_label_on));
+                    mOnOffText.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.zwave_on));
+                } else {
+                    mOnOffText.setText(itemView.getContext().getString(R.string.zwave_label_off));
+                    mOnOffText.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.zwave_off));
+                }
+
+
+                mOnOffText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mOnOffSwitchListener != null) {
+                            mOnOffSwitchListener.onOnOffClick(item.mZWaveDevice);
+                        }
+                    }
+                });
+            }
+
+            if ((meterReports != null) && (meterReports.size() > 0)) {
+
+                String data =  "";
+
+                for (MeterReport meterReport : meterReports) {
+                    Timber.d("meter type = %d", meterReport.getMeterType());
+                    if (meterReport.getMeterType() == MeterReport.ELECTRIC) {
+                        String unit = MeterReport.getScaleUnit(itemView.getContext(),
+                                meterReport.getMeterType(), meterReport.getScale());
+                        double value = meterReport.getMeterValue();
+
+                        Timber.d("%.1f %s  ", value, unit);
+
+                        String newData = String.format(Locale.getDefault(), " %.2f %s ", value, unit);
+
+                        data = data + newData;
+                    }
+                }
+
+                mDataText.setText(data);
+            } else {
+                mDataText.setVisibility(View.GONE);
+            }
+
+
         }
 
+    }
+
+    public interface OnOffSwitchListener {
+        void onOnOffClick(ZWaveDevice device);
     }
 }

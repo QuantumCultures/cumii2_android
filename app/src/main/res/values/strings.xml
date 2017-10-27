@@ -129,6 +129,15 @@
     <string name="zwave_format_lux">%1$.1f lx</string>
     <string name="zwave_format_absolute_humidity">%1$.1f g/\u33a5</string>
 
-    <string name="zwave_label_on">On</string>
-    <string name="zwave_label_off">Off</string>
+    <string name="zwave_label_on">ON</string>
+    <string name="zwave_label_off">OFF</string>
+    <string name="zwave_label_no_data">No data</string>
+
+    <string name="zwave_unit_kwh">kWh</string>
+    <string name="zwave_unit_kVAh">kVAh</string>
+    <string name="zwave_unit_W">W</string>
+    <string name="zwave_unit_pulse_count">Pulse count</string>
+    <string name="zwave_unit_V">V</string>
+    <string name="zwave_unit_A">A</string>
+    <string name="zwave_unit_power_factor">Power factor</string>
 </resources>
