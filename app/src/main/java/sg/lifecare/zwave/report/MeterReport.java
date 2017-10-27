@@ -1,9 +1,16 @@
 package sg.lifecare.zwave.report;
 
+import android.content.Context;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import sg.lifecare.cumii.R;
+
 public class MeterReport {
+
+    public static final String TAG = "MeterReport";
 
     // rate type
     public static final int IMPORT = 0x01;
@@ -40,16 +47,47 @@ public class MeterReport {
     private int value;
     private List<Integer> data;
 
+    public static String getScaleUnit(Context context, int meterType, int scale) {
+        Log.d(TAG, "getScaleUnit: meter_type=" + meterType + " scale=" + scale);
+        if (meterType == ELECTRIC) {
+            switch (scale) {
+                case ELECTRIC_KWH:
+                    return context.getString(R.string.zwave_unit_kwh);
+
+                case ELECTRIC_KVAH:
+                    return context.getString(R.string.zwave_unit_kVAh);
+
+                case ELECTRIC_W:
+                    return context.getString(R.string.zwave_unit_W);
+
+                case ELECTRIC_PULSE_COUNT:
+                    return context.getString(R.string.zwave_unit_pulse_count);
+
+                case ELECTRIC_V:
+                    return context.getString(R.string.zwave_unit_V);
+
+                case ELECTRIC_A:
+                    return context.getString(R.string.zwave_unit_A);
+
+                case ELECTRIC_POWER_FACTOR:
+                    return context.getString(R.string.zwave_unit_power_factor);
+            }
+        }
+
+
+        return "";
+    }
+
     public MeterReport() {
         data = new ArrayList<Integer>();
     }
 
     public int getRateType() {
-        return (value & 0x0060) >> 5;
+        return (type & 0x0060) >> 5;
     }
 
     public int getMeterType() {
-        return (value & 0x001F);
+        return (type & 0x001F);
     }
 
     public int getPrecision() {
@@ -57,7 +95,7 @@ public class MeterReport {
     }
 
     public int getScale() {
-        return (value & 0x0018) | ((value & 0x80) >> 5);
+        return ((value & 0x0018) >> 3) | ((type & 0x0080) >> 5);
     }
 
     public int getSize() {
@@ -78,5 +116,35 @@ public class MeterReport {
     public void setData(List<Integer> data) {
         this.data.clear();
         this.data.addAll(data);
+    }
+
+    public double getMeterValue() {
+        int precision = getPrecision();
+        int size = getSize();
+        double value = 0d;
+
+        Log.d(TAG, String.format("getMeterValue: precision=%d, size=%d", precision, size));
+
+        if (data.size() == size) {
+            if (size == 1) {
+                value = (this.data.get(0) & 0x000000ff);
+            } else if (size == 2) {
+                value = ((this.data.get(1) & 0x000000ff) << 8) + (this.data.get(0) & 0x000000ff);
+            } else if (size == 4) {
+                value = ((this.data.get(0) & 0x000000ff) << 24)
+                        + ((this.data.get(1) & 0x000000ff) << 16)
+                        + ((this.data.get(2) & 0x000000ff) << 8)
+                        + (this.data.get(3) & 0x000000ff);
+            }
+
+            Log.d(TAG, String.format("getMeterValue: precisionPowe=%f, value=%f", Math.pow(10, precision), value));
+
+            value = value / Math.pow(10, precision);
+
+        } else {
+            Log.d(TAG, "getSensorData: data size not match");
+        }
+
+        return value;
     }
 }

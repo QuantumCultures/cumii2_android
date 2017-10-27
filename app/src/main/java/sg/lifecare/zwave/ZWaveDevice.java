@@ -210,5 +210,4 @@ public class ZWaveDevice {
             multilevel_sensor_reports.add(report);
         }
     }
-
 }
