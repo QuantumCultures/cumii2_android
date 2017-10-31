@@ -103,6 +103,9 @@ dependencies {
         transitive = true;
     }
     compile 'com.scottyab:secure-preferences-lib:0.1.4'
+
+    compile 'com.tencent.bugly:crashreport:2.6.5'
+
     testCompile 'junit:junit:4.12'
 }
 

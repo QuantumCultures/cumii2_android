@@ -4,6 +4,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import io.fabric.sdk.android.Fabric;
 import sg.lifecare.cumii.data.DataManager;
@@ -17,6 +18,8 @@ public class CumiiApp extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
+
+        CrashReport.initCrashReport(getApplicationContext(), "7cce9349f7", false);
 
         Timber.plant(new Timber.DebugTree());
 
