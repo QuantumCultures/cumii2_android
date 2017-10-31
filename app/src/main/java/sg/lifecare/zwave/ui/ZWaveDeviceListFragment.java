@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -25,10 +24,10 @@ import sg.lifecare.cumii.R;
 import sg.lifecare.cumii.data.server.response.AssistsedEntityResponse;
 import sg.lifecare.cumii.service.CumiiMqttService;
 import sg.lifecare.cumii.ui.base.BaseFragment;
-import sg.lifecare.cumii.ui.dashboard.DashboardActivity;
 import sg.lifecare.zwave.ZWaveDevice;
 import sg.lifecare.zwave.ZWaveUtil;
 import sg.lifecare.zwave.control.Control;
+import sg.lifecare.zwave.control.Security;
 import sg.lifecare.zwave.ui.adapter.ZWaveDeviceListAdapter;
 import timber.log.Timber;
 
@@ -47,8 +46,21 @@ public class ZWaveDeviceListFragment extends BaseFragment {
 
     private AssistsedEntityResponse.Data mMember;
     private ZWaveDeviceListAdapter mDeviceAdapter;
+    private ZWaveDeviceListFragmentListener mCallback;
 
-    private List<ZWaveDevice> mZwaveDevices = new ArrayList<>();
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof ZWaveDeviceListFragmentListener) {
+            mCallback = (ZWaveDeviceListFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement ZWaveDeviceListFragmentListener");
+        }
+    }
+
+
 
     public static ZWaveDeviceListFragment newInstance(int position) {
         Bundle data = new Bundle();
@@ -86,8 +98,12 @@ public class ZWaveDeviceListFragment extends BaseFragment {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(CumiiMqttService.ACTION_ZWAVE_STATUS);
+        filter.addAction(CumiiMqttService.ACTION_ZWAVE_SECURITY);
 
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMqttReceiver, filter);
+
+        mDeviceAdapter.setOnOffSwitchListener(mOnOffSwitchListener);
+        mDeviceAdapter.setSecurityListener(mSecurityListener);
     }
 
     @Override
@@ -97,6 +113,9 @@ public class ZWaveDeviceListFragment extends BaseFragment {
         Timber.d("onStop");
 
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMqttReceiver);
+
+        mDeviceAdapter.setOnOffSwitchListener(null);
+        mDeviceAdapter.setSecurityListener(null);
     }
 
     private void setupView() {
@@ -111,7 +130,7 @@ public class ZWaveDeviceListFragment extends BaseFragment {
         mDeviceAdapter = new ZWaveDeviceListAdapter(getContext());
         mDeviceListView.setAdapter(mDeviceAdapter);
 
-        mDeviceAdapter.setOnOffSwitchListener(mOnOffSwitchListener);
+
     }
 
     @Override
@@ -122,28 +141,76 @@ public class ZWaveDeviceListFragment extends BaseFragment {
     private ZWaveDeviceListAdapter.OnOffSwitchListener mOnOffSwitchListener = new ZWaveDeviceListAdapter.OnOffSwitchListener() {
 
         @Override
-        public void onOnOffClick(ZWaveDevice device) {
+        public void onOnOffClick(ZWaveDevice device, boolean isOn) {
             Timber.d("onOffClick");
 
-            CumiiMqttService mqttService = ((DashboardActivity)getBaseActivity()).getCumiiMqttService();
+            CumiiMqttService mqttService = mCallback.getMqttService();
             if (mqttService != null) {
                 List<AssistsedEntityResponse.Device> devices = mMember.getDevices();
                 if ((devices != null) && (devices.size() > 0)) {
 
                     Control control = new Control();
                     control.setNodeId(device.getNodeId());
-                    control.setValue(device.getBinarySwitchReport().isOn() ?
-                            Control.OFF : Control.ON);
+
+                    control.setValue(isOn ? Control.ON : Control.OFF);
 
                     mqttService.publishZwaveSet(mMember.getId(), devices.get(0).getId(),
                             Control.TITLE, Control.toJson(control));
                 }
-
-
             }
         }
     };
 
+    private ZWaveDeviceListAdapter.SecurityListener mSecurityListener = new ZWaveDeviceListAdapter.SecurityListener() {
+
+        @Override
+        public void onArmClick() {
+            CumiiMqttService mqttService = mCallback.getMqttService();
+            if (mqttService != null) {
+                List<AssistsedEntityResponse.Device> devices = mMember.getDevices();
+                if ((devices != null) && (devices.size() > 0)) {
+
+                    Security alarm = new Security();
+                    alarm.setStatus(Security.ARM);
+
+                    mqttService.publishZwaveSet(mMember.getId(), devices.get(0).getId(),
+                            Security.TITLE, Security.toJson(alarm));
+                }
+            }
+        }
+
+        @Override
+        public void onDisarmClick() {
+            CumiiMqttService mqttService = mCallback.getMqttService();
+            if (mqttService != null) {
+                List<AssistsedEntityResponse.Device> devices = mMember.getDevices();
+                if ((devices != null) && (devices.size() > 0)) {
+
+                    Security alarm = new Security();
+                    alarm.setStatus(Security.DISARM);
+
+                    mqttService.publishZwaveSet(mMember.getId(), devices.get(0).getId(),
+                            Security.TITLE, Security.toJson(alarm));
+                }
+            }
+        }
+
+        @Override
+        public void onHomeClick() {
+            CumiiMqttService mqttService = mCallback.getMqttService();
+            if (mqttService != null) {
+                List<AssistsedEntityResponse.Device> devices = mMember.getDevices();
+                if ((devices != null) && (devices.size() > 0)) {
+
+                    Security alarm = new Security();
+                    alarm.setStatus(Security.ARM_PARTIAL);
+
+                    mqttService.publishZwaveSet(mMember.getId(), devices.get(0).getId(),
+                            Security.TITLE, Security.toJson(alarm));
+                }
+            }
+        }
+    };
 
     private BroadcastReceiver mMqttReceiver = new BroadcastReceiver() {
         @Override
@@ -164,7 +231,20 @@ public class ZWaveDeviceListFragment extends BaseFragment {
 
                 // TODO: check the difference
                 mDeviceAdapter.addAllDevices(devices);
+            } else if (CumiiMqttService.ACTION_ZWAVE_SECURITY.equals(intent.getAction())) {
+                String message = intent.getStringExtra("message");
+
+                mMessageText.setVisibility(View.INVISIBLE);
+
+                Security security = Security.fromJson(message);
+
+                mDeviceAdapter.addSecurity(security);
             }
         }
     };
+
+    public interface ZWaveDeviceListFragmentListener {
+        CumiiMqttService getMqttService();
+    }
+
 }

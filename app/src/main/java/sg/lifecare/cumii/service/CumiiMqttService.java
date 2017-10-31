@@ -24,15 +24,12 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import sg.lifecare.cumii.CumiiApp;
 import sg.lifecare.cumii.CumiiConfig;
 import sg.lifecare.cumii.data.DataManager;
-import sg.lifecare.cumii.data.server.response.AssistsedEntityResponse;
 import sg.lifecare.cumii.util.NetworkUtils;
 import timber.log.Timber;
 
@@ -42,6 +39,7 @@ import timber.log.Timber;
 public class CumiiMqttService extends Service implements MqttCallbackExtended {
 
     public static final String ACTION_ZWAVE_STATUS = "zwave_status";
+    public static final String ACTION_ZWAVE_SECURITY = "zwave_security";
 
     private MqttAndroidClient mClient;
     private MqttConnectOptions mOptions;
@@ -156,10 +154,14 @@ public class CumiiMqttService extends Service implements MqttCallbackExtended {
         return getZwaveMainTopic(entityId, gatewayId) + "/status";
     }
 
-    public void publishZwaveSet(String entityId, String gatewayId, String subtopic, String message) {
-        String topic =  getZwaveMainTopic(entityId, gatewayId) + "/set/" + subtopic;
+    private String getZwaveSecurityTopic(String entityId, String gatewayId) {
+        return getZwaveMainTopic(entityId, gatewayId) + "/security";
+    }
 
-        if (!TextUtils.isEmpty(message) && mClient.isConnected()) {
+    private void publishTopic(String topic, String message) {
+        Timber.d("publishTopic: %s", topic);
+
+        if ((message != null) && mClient.isConnected()) {
             MqttMessage mqttMessage = new MqttMessage(message.getBytes());
 
             try {
@@ -168,6 +170,18 @@ public class CumiiMqttService extends Service implements MqttCallbackExtended {
                 Timber.e(e, e.getMessage());
             }
         }
+    }
+
+    public void publishZwaveSet(String entityId, String gatewayId, String subtopic, String message) {
+        String topic =  getZwaveMainTopic(entityId, gatewayId) + "/set/" + subtopic;
+
+        publishTopic(topic, message);
+    }
+
+    public void publishZwaveGet(String entityId, String gatewayId, String subtopic, String message) {
+        String topic = getZwaveMainTopic(entityId, gatewayId) + "/get/" + subtopic;
+
+        publishTopic(topic, message);
     }
 
     public void subscribeCameraTopics(String entityId, String gatewayId) {
@@ -189,10 +203,15 @@ public class CumiiMqttService extends Service implements MqttCallbackExtended {
 
         unsubscribeZwaveTopics();
 
-        String topic = getZwaveStatusTopic(entityId, gatewayId);
-        Timber.d("subscribeZwaveTopics: topic=%s", topic);
+        String statusTopic = getZwaveStatusTopic(entityId, gatewayId);
+        Timber.d("subscribeZwaveTopics: statusTopic=%s", statusTopic);
 
-        mZwaveTopics.put(topic, topic);
+        mZwaveTopics.put(statusTopic, statusTopic);
+
+        String securityTopic = getZwaveSecurityTopic(entityId, gatewayId);
+
+        mZwaveTopics.put(securityTopic, securityTopic);
+        Timber.d("subscribeZwaveTopics: securityTopic=%s", securityTopic);
 
         List<String> topicList = new ArrayList<>(mZwaveTopics.keySet());
         subscribeTopics(topicList);
@@ -311,12 +330,17 @@ public class CumiiMqttService extends Service implements MqttCallbackExtended {
         Timber.d("    topic: %s", topic);
         Timber.d("  message: %s", message.toString());
 
-        if (topic.contains("/zwave/")) {
-            Timber.d("publish zwave status");
+        if (topic.contains("/zwave/status")) {
+            Timber.d("broadcast zwave status");
             Intent intent = new Intent(ACTION_ZWAVE_STATUS);
             intent.putExtra("message", message.toString());
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
+        } else if (topic.contains("/zwave/security")) {
+            Timber.d("broadcast zwave security");
+            Intent intent = new Intent(ACTION_ZWAVE_SECURITY);
+            intent.putExtra("message", message.toString());
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
         }
     }
 

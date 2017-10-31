@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:minHeight="@dimen/zwave_item_min_height"
+    tools:layout_editor_absoluteY="85dp"
+    tools:layout_editor_absoluteX="0dp">
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/arm_button"
+        style="@style/ZWaveAppButtonInactive"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/zwave_arm"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/home_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/home_button"
+        style="@style/ZWaveAppButtonInactive"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/zwave_home"
+        app:layout_constraintBottom_toBottomOf="@+id/arm_button"
+        app:layout_constraintLeft_toRightOf="@+id/arm_button"
+        app:layout_constraintRight_toRightOf="@+id/disarm_button"
+        app:layout_constraintTop_toTopOf="@+id/arm_button" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/disarm_button"
+        style="@style/ZWaveAppButtonActive"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/zwave_disarm"
+        app:layout_constraintBottom_toBottomOf="@+id/arm_button"
+        app:layout_constraintLeft_toRightOf="@+id/home_button"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/arm_button" />
+</android.support.constraint.ConstraintLayout>

@@ -41,11 +41,15 @@ import sg.lifecare.cumii.data.server.response.LogoutResponse;
 import sg.lifecare.cumii.data.server.response.Response;
 import sg.lifecare.cumii.service.CumiiMqttService;
 import sg.lifecare.cumii.ui.base.BaseActivity;
+import sg.lifecare.zwave.control.Security;
+import sg.lifecare.zwave.control.Status;
+import sg.lifecare.zwave.ui.ZWaveDeviceListFragment;
 import timber.log.Timber;
 
 public class DashboardActivity extends BaseActivity implements
         MemberListFragment.MemberListFragmentListener,
-        DeviceListFragment.DeviceListFragmentListener {
+        DeviceListFragment.DeviceListFragmentListener,
+        ZWaveDeviceListFragment.ZWaveDeviceListFragmentListener {
 
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
@@ -391,6 +395,18 @@ public class DashboardActivity extends BaseActivity implements
         if (gateways.size() > 0) {
             mCumiiMqttService.subscribeCameraTopics(entityId, gateways.get(0).getId());
             mCumiiMqttService.subscribeZwaveTopics(entityId, gateways.get(0).getId());
+
+            Status status = new Status();
+            mCumiiMqttService.publishZwaveGet(entityId, gateways.get(0).getId(),
+                    Status.TITLE, Status.toJson(status));
+
+            mCumiiMqttService.publishZwaveGet(entityId, gateways.get(0).getId(),
+                    Security.TITLE, "");
         }
+    }
+
+    @Override
+    public CumiiMqttService getMqttService() {
+        return mCumiiMqttService;
     }
 }

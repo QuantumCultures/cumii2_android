@@ -23,7 +23,7 @@ public class ZWaveDevice {
     private int role_type;
     private Date last_update;
 
-    private List<Integer> command_classes;
+    private transient List<Integer> command_classes;
 
     private BasicReport basic_report;
     private BinarySensorReport binary_sensor_report;
@@ -193,21 +193,42 @@ public class ZWaveDevice {
         }
     }
 
-    public void addAlarmReport(AlarmReport alarmReport) {
-        if (!hasAlarmReport(alarmReport.getAlarmType())) {
-            alarm_reports.add(alarmReport);
+    public void replaceAlarmReport(AlarmReport report) {
+        if (alarm_reports.size() > 0) {
+            for (int i = 0; i < alarm_reports.size(); i++) {
+                if (alarm_reports.get(i).getAlarmType() == report.getAlarmType()) {
+                    alarm_reports.remove(i);
+                    break;
+                }
+            }
         }
+
+        alarm_reports.add(report);
     }
 
-    public void addMeterReport(MeterReport report) {
-        if (!hasMeterReport(report.getMeterType())) {
-            meter_reports.add(report);
+    public void replaceMeterReport(MeterReport report) {
+        if (meter_reports.size() > 0) {
+            for (int i = 0; i < meter_reports.size(); i++) {
+                if (meter_reports.get(i).getMeterType() == report.getMeterType()) {
+                    meter_reports.remove(i);
+                    break;
+                }
+            }
         }
+
+        meter_reports.add(report);
     }
 
-    public void addMultilevelSensorReport(MultilevelSensorReport report) {
-        if (!hasMultilevelSensorReport(report.getSensorType())) {
-            multilevel_sensor_reports.add(report);
+    public void replaceMultilevelSensorReport(MultilevelSensorReport report) {
+        if (multilevel_sensor_reports.size() > 0) {
+            for (int i = 0; i < multilevel_sensor_reports.size(); i++) {
+                if (multilevel_sensor_reports.get(i).getSensorType() == report.getSensorType()) {
+                    multilevel_sensor_reports.remove(i);
+                    break;
+                }
+            }
         }
+
+        multilevel_sensor_reports.add(report);
     }
 }

@@ -40,6 +40,12 @@
     <color name="jsw_offline">#B71C1C</color>
 
 
-    <color name="zwave_on">#00FF00</color>
-    <color name="zwave_off">#FF0000</color>
+    <color name="zwave_on">#2E7D32</color>
+    <color name="zwave_off">#C62828</color>
+
+    <color name="zwave_alarm_on">#C62828</color>
+    <color name="zwave_alarm_off">#2E7D32</color>
+
+    <color name="zwave_active">#2E7D32</color>
+    <color name="zwave_inactive">#9E9E9E</color>
 </resources>
