@@ -1,11 +1,13 @@
 package sg.lifecare.zwave.control;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import timber.log.Timber;
-
 public class Control {
+
+    private static final String TAG = "Control";
 
     public static final String TITLE = "control";
 
@@ -19,7 +21,7 @@ public class Control {
         String result = new Gson().toJson(
                 control, new TypeToken<Control>() {}.getType());
 
-        Timber.d("toJson: %s", result);
+        Log.d(TAG, "toJson: " + result);
 
         return result;
     }
